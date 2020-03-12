@@ -17,11 +17,11 @@ static const char *levelToString(log::ELevel level)
 		case log::LL_DBG:
 			return "dbg";
 
+		case log::LL_INFO:
+			return "info";
+
 		case log::LL_NORM:
 			return "norm";
-
-		case log::LL_WARN:
-			return "warn";
 
 		case log::LL_ERR:
 			return "err";
@@ -38,7 +38,7 @@ static const char *levelToString(log::ELevel level)
 void log::setLevel(ELevel minLevel)
 {
 	g_minLevel = minLevel;
-	logd("Log level set to %d", minLevel);
+	logd("Log level set to %s", levelToString(minLevel));
 }
 
 void log::doLog(ELevel level, const char *file, int line, const char *fmt, ...)

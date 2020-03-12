@@ -9,7 +9,6 @@
 #include <cstdarg>
 #include <cstdlib>
 #include <cstdio>
-#include <cstdarg>
 #include "throw.h"
 
 void doThrow(const char *file, int line, const char *fmt, ...)
