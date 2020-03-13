@@ -13,14 +13,6 @@
 #include "omifile.h"
 #include "util.h"
 
-applet::CRead::CRead()
-{
-}
-
-applet::CRead::~CRead()
-{
-}
-
 bool applet::CRead::run(int argc, char * const argv[])
 {
 	cli::CRead cli;

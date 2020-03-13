@@ -137,8 +137,38 @@ bool protocol::read(CPort &port, uint8_t *data, uint16_t offset, uint8_t size)
 
 bool protocol::write(CPort &port, const uint8_t *data, uint16_t offset, uint8_t size)
 {
-	// xxx
-	return false;
+	xassert(size != 0, "Refusing to write empty buffer");
+
+	std::vector<uint8_t> req;
+	req.resize(size + 6);
+
+	req[0] = 'W';
+	req[1] = offset >> 8;
+	req[2] = offset & 0xff;
+	req[3] = size;
+	req[size + 4] = req[1] + req[2] + req[3];
+	req[size + 5] = 0x06;
+
+	for (size_t i(0); i < size; ++i)
+	{
+		req[i + 4] = data[i];
+		req[size + 4] += data[i];
+	}
+
+	if (!exchange(port, req))
+		return false;
+
+	uint8_t ack;
+	if (!port.read(&ack, sizeof(ack)))
+		return false;
+
+	if (ack != 0x06)
+	{
+		loge("Radio did not acknowledge write packet correctly");
+		return false;
+	}
+
+	return true;
 }
 
 bool protocol::end(CPort &port)

@@ -27,7 +27,7 @@ void COmiFile::SHdr::toHost()
 {
 	magic		= be32toh(magic);
 	version		= be16toh(version);
-	offset		= be16toh(version);
+	offset		= be16toh(offset);
 	size		= be16toh(size);
 	crc32		= be32toh(crc32);
 }

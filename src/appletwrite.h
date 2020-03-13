@@ -1,7 +1,7 @@
 /**
- * \brief	Applet to read data from the radio
+ * \brief	Applet to write data to the radio
  * \author	Circuit Chaos
- * \date	2020-03-12
+ * \date	2020-03-13
  */
 
 #pragma once
@@ -10,10 +10,10 @@
 
 namespace applet
 {
-	class CRead: public CBase
+	class CWrite: public CBase
 	{
 	public:
-		virtual ~CRead() {}
+		virtual ~CWrite() {}
 		virtual bool run(int argc, char * const argv[]);
 	};
 }
