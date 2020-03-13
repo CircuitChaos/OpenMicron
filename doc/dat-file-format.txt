@@ -1,0 +1,55 @@
+Everything that's presented here has been reverse-engineered and you use 
+it at your own risk.
+
+File size: 45755 bytes
+
+File header:
+
+00000000  4d 49 43 52 4f 4e 20 20  01 00 56 31 30 30 20 20  |MICRON  ..V100  |
+
+Note that channels are added in order of being added, not in channel order!
+
+Channel offset: 173 * index + 0x2b93 (index starts at 0 and is not channel number!)
+Channel data size: 73 bytes
+All numbers are LE
+
+Channel data (example with low power):
+
+ofs	size	meaning
+0x00	2	channel number, binary (01 00, 02 00, 0c 00, etc.)
+0x02	2	dun2 01 00 (?)
+0x04	2	scan add (0 do not add, 1 add)
+0x06	9	RX frequency, decimal; divide by 10e5 to get in MHz
+0x0F	9	TX frequency shift, decimal; divide by 10e5 to get in MHz
+0x18	2	shift mode (0 off, 1 positive, 2 negative)
+0x1A	2	dun7 01 00 (?)
+0x1C	2	power (0 low, 1 medium, 2 high)
+0x1E	2	talkaround (0 off, 1 on)
+0x20	2	TX off (0 TX permitted, 1 TX forbidden)
+0x22	2	reverse mode (0 normal, 1 reverse)
+0x24	2	channel spacing (0 12.5khz, 1 20khz, 2 25khz)
+0x26	2	TX encode mode (0 off, 1 CTCSS, 2 DCS)
+0x28	2	RX decode mode (0 off, 1 CTCSS, 2 DCS)
+0x2A	2	Optional signaling mode (0 off, 5 for M6, 9 for M10, 0x0A for M11)
+0x2C	2	TX CTCSS (0x14 for 127.3, 0x13 for 123.0, and so on)
+0x2E	2	RX CTCSS (0 62.5, 1 67.0, and so on)
+0x30	2	TX DCS mode (0x04 for 004, add 0x200 if invert is on)
+0x32	2	RX DCS mode (0x0C for 014, add 0x200 if invert is on)
+0x34	2	BCL (0 off, 1 repeater, 2 busy)
+0x36	2	DTMF PTT ID (0 off, 1 begin, 2 end, 3 begin and end)
+0x38	2	5Tone PTT ID (0 off, 1 begin, 2 end, 3 begin and end)
+0x3A	2	squelch mode (0 carrier, 1 CTCSS/DCS)
+0x3C	2	optional signaling flag (0 off, 1 DTMF, 3 5Tone)
+0x3E	2	dun19 00 00 (?)
+0x40	2	dun1a 00 00 (?)
+0x42	5	channel name, ascii, space-padded on the right (SR5WA, SR5U<space>, etc.)
+0x47	2	define CTCSS (numeric; CF 09 -> 9CF -> 2511 -> 251.1Hz)
+
+(empty channels are all NULLs)
+
+Other:
+
+- welcome message is at 0x1aa6 (8 bytes, space-padded, but software allows entering only 7)
+- backlight brightness is at 0x1a60 (0x01...0x03)
+- screen direction is at 0x1a68 (0x00 normal, 0x01 inverted)
+- mic brightness is at 0x1a6a (0x00 = off, 0x0f = 15, 0x13 = 19, 0x1f = 31)

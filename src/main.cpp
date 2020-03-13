@@ -4,6 +4,8 @@
  * \date	2020-03-12
  */
 
+#include <vector>
+#include <string>
 #include <memory>
 #include <stdexcept>
 #include <cstdlib>
@@ -13,24 +15,27 @@
 #include "log.h"
 #include "appletbase.h"
 #include "appletread.h"
+#include "cliread.h"
 
 static void help()
 {
+	std::vector<std::string> summaries;
+
+	cli::CRead cr;
+	summaries.push_back(cr.getSummary());
+	// xxx do above for other applets too
+
 	printf(
 		"Open Micron version %s (commit hash %s)\n"
-		"Utility to program CRT Micron transceivers under Linux\n"
+		"Utility to program CRT Micron transceivers under Linux.\n"
 		"Newest version at: https://github.com/CircuitChaos/OpenMicron\n"
-		"\n"
-		"Usage: omi <applet name> [applet arguments]\n"
-		"\n"
-		"Available applets:\n"
-		"- read\n"
-		"- write\n"
-		"- export\n"
-		"- import\n"
-		"\n"
-		"Call applet name without arguments to read its help.\n",
+		"\n",
 		version::getVersion(), version::getHash());
+
+	for (const auto &s: summaries)
+		printf("Usage: %s\n", s.c_str());
+
+	printf("\nCall omi <applet name> -h (e.g. omi read -h) to get detailed help.\n");
 }
 
 static int main2(int argc, char * const argv[])

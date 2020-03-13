@@ -1,0 +1,52 @@
+Parameters: 9600 8n1
+
+Read: handshake, read packets, end
+Write: handshake, write packets, end
+
+Note that all data written is echoed by the cable itself due to the cable construction (RX and TX on the same line). This echo is not presented here.
+
+Handshake:
+
+1. Write: PROGRAM
+3. Read: QX<ACK>
+4. Write: <STX>
+5. Read: IMICRON<00><01>V100<00><00><ACK>
+
+Read packets:
+
+1. Read request:
+   - R
+   - two-byte offset (big endian), for example 00 00, 00 10, 00 20, ..., 32 90
+   - one-byte length (0x10 = 16 bytes)
+2. Read response:
+   - W
+   - two-byte offset (as above)
+   - one-byte length (as above)
+   - data
+   - one-byte checksum (sum of offset, length and data & 0xff)
+   - <ACK>
+
+Write packets:
+
+First, something (some ID?) is read from offset 3B 10. Contents:
+02 FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00
+
+Then, write packets occur.
+
+1. Write request:
+   - W
+   - two-byte offset (big endian)
+   - one-byte length (0x10 = 16 bytes)
+   - 16 bytes of data
+   - one-byte checksum (as above)
+   - <ACK>
+
+2. Write response:
+   - <ACK>
+
+End:
+
+1. Write: END
+2. Read: END<ACK>
+
+Last offset during writing: 0x3290 (12960 bytes).

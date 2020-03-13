@@ -20,6 +20,9 @@ namespace cli
 		// also calls help() and sets logging verbosity
 		bool parse(int argc, char * const argv[]);
 
+		// can call without parse(), called from help() from main
+		const std::string &getSummary() const;
+
 	protected:
 		// call these two in ctor
 		void setSummary(const std::string &name, const std::string &opts);

@@ -99,7 +99,7 @@ std::string cli::CBase::getOptString() const
 
 void cli::CBase::help()
 {
-	printf("Syntax: %s\n", m_summary.c_str());
+	printf("Usage: %s\n\n", getSummary().c_str());
 	printf("Available options:\n");
 	for (const auto &o: m_optsMap)
 		printf("  -%c: %s\n", o.first, o.second.descr.c_str());
@@ -108,27 +108,27 @@ void cli::CBase::help()
 std::string cli::CBase::baseParsed()
 {
 	const std::string err("Conflicting verbosity options used");
-	log::ELevel ll(log::LL_NORM);
+	xlog::ELevel ll(xlog::LL_NORM);
 	if (exists('d'))
-		ll = log::LL_DBG;
+		ll = xlog::LL_DBG;
 
 	if (exists('q'))
 	{
-		if (ll != log::LL_NORM)
+		if (ll != xlog::LL_NORM)
 			return err;
 
-		ll = log::LL_ERR;
+		ll = xlog::LL_ERR;
 	}
 
 	if (exists('v'))
 	{
-		if (ll != log::LL_NORM)
+		if (ll != xlog::LL_NORM)
 			return err;
 
-		ll = log::LL_INFO;
+		ll = xlog::LL_INFO;
 	}
 
-	log::setLevel(ll);
+	xlog::setLevel(ll);
 	return "";
 }
 
@@ -162,4 +162,9 @@ std::string cli::CBase::get(char option)
 	const auto &o = m_opts.find(option);
 	xassert(o != m_opts.end(), "%c", option);
 	return o->second;
+}
+
+const std::string &cli::CBase::getSummary() const
+{
+	return m_summary;
 }

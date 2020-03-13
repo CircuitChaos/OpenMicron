@@ -12,8 +12,8 @@
 
 cli::CRead::CRead()
 {
-	setSummary("read", "-o <output file> [-p <port>]");
-	add('o', true, "Output file path");
+	setSummary("read", "-o <output.omi> [-p <port>]");
+	add('o', true, "Output .omi file path");
 	add('p', true, util::format("Port to use (default: %s)", config::DFL_PORT));
 }
 
