@@ -1,0 +1,60 @@
+Beginning of memory contains channels, each occupying 32 bytes.
+
+ofs	size	meaning
+----------------------------------------------------------
+0x00	4	rx frequency in bcd format (example: 43 93 50 00 = 439.35000 MHz)
+0x04	4	rx frequency shift in bcd format (example: 00 00 00 00 or 00 76 00 00 for 7.60000 MHz)
+0x08	1	?
+0x09	1	flags 1
+0x0a	1	flags 2
+0x0b	1	ctcss flags
+0x0c	1	rx ctcss index (0x14 = 127.3, 0x15 = 131.8)
+0x0d	1	tx ctcss index (0 = 62.5, 1 = 67.0, 0x14 = 127.3)
+0x0e	1	rx dcs index (0x03 = 003, 0x0a = 012)
+0x0f	1	rx dcs invert flag (0 = normal, 2 = inverted)
+0x10	1	tx dcs index (0x05 = 005, without it's 0x11)
+0x11	1	tx dcs invert flag (0 = normal, 2 = inverted)
+0x12	1	bcl mode (0 = off, 1 = rpt, 2 = busy)
+0x13	1	pttid flag (0 = off, 1 = begin, 2 = end, 3 = both, 0x10 = 5tone begin, 0x20 = 5tone end, 0x30 = 5tone both)
+0x14	1	squelch mode (0 = carrier, 1 = ctcss/dcs, 2 = optional signaling)
+0x15	1	optional signaling flag (0 = off, 1 = dtmf, 3 = 5Tone)
+0x16	1	?
+0x17	1	?
+0x18	1	?
+0x19	5	channel name, space-padded to the right
+0x1e	2	defined ctcss (cf 09 -> 0x9cf -> 2511 -> 251.1)
+
+0x09 flags:
+- bit 7: talkaround (0 = off, 1 = on)
+- bit 6: ?
+- bit 5: ?
+- bit 4: ?
+- bits 32: txpower (00 = low, 01 = medium, 10 = high)
+- bits 10: shift direction (00 = off, 01 = up, 10 = down)
+
+0x0a flags:
+- bit 7: ?
+- bit 6: ?
+- bit 5: ?
+- bit 4: ?
+- bits 32: channel spacing (00 = 12.5kHz, 01 = 20 kHz, 10 = 25kHz)
+- bit 1: reverse (0 = reverse off, 1 = reverse on)
+- bit 0: txoff (0 = tx permitted, 1 = tx forbidden)
+
+0x0b flags:
+- bit 7654: dtmf optional signaling digit (0000 = M1, 0001 = M2, 0010 = M3, ..., 1110 = M15, 1111 = M16)
+- bit 3: rx dcs (0 = off, 1 = on)
+- bit 2: rx ctcss (0 = off, 1 = on)
+- bit 1: tx dcs (0 = off, 1 = on)
+- bit 0: tx ctcss (0 = off, 1 = on)
+
+-----
+
+Scan flags start at 0x1960 (bitmap) and end at 0x1978 (25 bytes).
+
+Byte 1 is for channels 1...8 (bit 0 = chan 1, bit 1 = chan 2, etc.), byte 2 for 9...15, and so on.
+1 means that scanning is enabled.
+
+Other:
+
+- welcome message at 0x1980 (7 bytes, space-padded to the right)

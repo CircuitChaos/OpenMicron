@@ -10,11 +10,12 @@
 #include "util.h"
 #include "log.h"
 
-cli::CRead::CRead()
+cli::CRead::CRead(): m_full(false)
 {
 	setSummary("read", "-o <output.omi> [-p <port>]");
 	add('o', true, "Output .omi file path");
 	add('p', true, util::format("Port to use (default: %s)", config::DFL_PORT));
+	add('f', false, "Read full memory (by default, only channel table is read)");
 }
 
 const std::string &cli::CRead::getPort() const
@@ -27,6 +28,11 @@ const std::string &cli::CRead::getFile() const
 	return m_file;
 }
 
+bool cli::CRead::isFull() const
+{
+	return m_full;
+}
+
 std::string cli::CRead::parsed()
 {
 	m_port = exists('p') ? get('p') : config::DFL_PORT;
@@ -35,5 +41,6 @@ std::string cli::CRead::parsed()
 		return "Output file not specified";
 
 	m_file = get('o');
+	m_full = exists('f');
 	return "";
 }

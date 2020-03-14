@@ -39,11 +39,13 @@ bool applet::CRead::run(int argc, char * const argv[])
 	of.setOffset(0);
 	of.setModel(model);
 
+	const uint16_t size(cli.isFull() ? config::FULL_MEMORY_SIZE : config::CHAN_MEMORY_SIZE);
+
 	std::vector<uint8_t> &data(of.getData());
-	data.resize(config::MEMORY_SIZE);
-	for (uint16_t ofs(0); ofs < config::MEMORY_SIZE; ofs += config::PACKET_SIZE)
+	data.resize(size);
+	for (uint16_t ofs(0); ofs < size; ofs += config::PACKET_SIZE)
 	{
-		logi("Reading offset 0x%04x of 0x%04x (%u%%)", ofs, config::MEMORY_SIZE, ofs * 100 / config::MEMORY_SIZE);
+		logi("Reading offset 0x%04x of 0x%04x (%u%%)", ofs, size, ofs * 100 / size);
 		if (!protocol::read(port, &data[ofs], ofs, config::PACKET_SIZE))
 		{
 			loge("Protocol error during read (offset 0x%04x)", ofs);

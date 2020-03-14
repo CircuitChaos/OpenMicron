@@ -16,9 +16,12 @@ namespace config
 	static const unsigned PORT_TIMEOUT	= 5;
 
 	// currently fixed; might be changed to argument
-	// for now, MEMORY_SIZE must be multiple of PACKET_SIZE
+	// for now, ..._MEMORY_SIZE must be multiple of PACKET_SIZE
 	static const unsigned PACKET_SIZE	= 0x10;
-	static const unsigned MEMORY_SIZE	= 0x32A0;
+
+	// FULL_MEMORY_SIZE is number of bytes read by the original utility
+	static const unsigned FULL_MEMORY_SIZE	= 0x32a0;
+	static const unsigned CHAN_MEMORY_SIZE	= 0x1990;
 
 	// this is the theoretical size of model name that radio can
 	// send (it's truncated to 16 bytes in .omi file anyway). any

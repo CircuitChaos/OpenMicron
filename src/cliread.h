@@ -18,6 +18,7 @@ namespace cli
 
 		const std::string &getPort() const;
 		const std::string &getFile() const;
+		bool isFull() const;
 
 	protected:
 		virtual std::string parsed();
@@ -25,5 +26,6 @@ namespace cli
 	private:
 		std::string m_port;
 		std::string m_file;
+		bool m_full;
 	};
 }
