@@ -154,8 +154,8 @@ bool CPort::read(void *data, size_t size)
 
 bool CPort::write(const void *data, size_t size)
 {
-	// it seems to be needed as without it I'm getting random "radio not responding" errors
-	usleep(50000);
+	// it seems to be needed as without it I'm getting random "radio not responding" errors...
+	usleep(5000);
 
 	logdump(">>", data, size);
 
