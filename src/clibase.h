@@ -24,7 +24,7 @@ namespace cli
 		const std::string &getSummary() const;
 
 	protected:
-		// call these two in ctor
+		// call these two in ctor, but setSummary() after all add()
 		void setSummary(const std::string &name, const std::string &opts);
 		void add(char option, bool withArg, const std::string &descr);
 		bool exists(char option);

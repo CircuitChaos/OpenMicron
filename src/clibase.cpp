@@ -136,7 +136,8 @@ void cli::CBase::setSummary(const std::string &name, const std::string &opts)
 {
 	std::string nonArgOpts;
 	for (const auto &o: m_optsMap)
-		nonArgOpts.push_back(o.first);
+		if (!o.second.withArg)
+			nonArgOpts.push_back(o.first);
 
 	m_summary = std::string("omi ") + name + " [-" + nonArgOpts + "]";
 	if (!opts.empty())

@@ -12,10 +12,10 @@
 
 cli::CWrite::CWrite()
 {
-	setSummary("write", "-i <input.omi> [-r <reference.omi>] [-p <port>]");
 	add('i', true, "Input .omi file path");
 	add('r', true, "Original (reference) .omi file path for differential upload");
 	add('p', true, util::format("Port to use (default: %s)", config::DFL_PORT));
+	setSummary("write", "-i <input.omi> [-r <reference.omi>] [-p <port>]");
 }
 
 const std::string &cli::CWrite::getPort() const

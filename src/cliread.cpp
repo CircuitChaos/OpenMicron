@@ -12,10 +12,10 @@
 
 cli::CRead::CRead(): m_full(false)
 {
-	setSummary("read", "-o <output.omi> [-p <port>]");
 	add('o', true, "Output .omi file path");
 	add('p', true, util::format("Port to use (default: %s)", config::DFL_PORT));
-	add('f', false, "Read full memory (by default, only channel table is read)");
+	add('f', false, "Read full memory (only channel table is read by default)");
+	setSummary("read", "-o <output.omi> [-p <port>]");
 }
 
 const std::string &cli::CRead::getPort() const

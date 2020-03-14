@@ -16,8 +16,10 @@
 #include "appletbase.h"
 #include "appletread.h"
 #include "appletwrite.h"
+#include "appletexport.h"
 #include "cliread.h"
 #include "cliwrite.h"
+#include "cliexport.h"
 
 static void help()
 {
@@ -28,6 +30,12 @@ static void help()
 
 	cli::CWrite cw;
 	summaries.push_back(cw.getSummary());
+
+	cli::CExport ce;
+	summaries.push_back(ce.getSummary());
+
+	// cli::CImport ci;
+	// summaries.push_back(ci.getSummary());
 	// xxx do above for other applets too
 
 	printf(
@@ -58,9 +66,9 @@ static int main2(int argc, char * const argv[])
 		a.reset(new applet::CRead());
 	else if (av1 == "write")
 		a.reset(new applet::CWrite());
-	/*
 	else if (av1 == "export")
 		a.reset(new applet::CExport());
+	/*
 	else if (av1 == "import")
 		a.reset(new applet::CImport());
 	*/
