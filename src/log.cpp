@@ -72,7 +72,7 @@ void xlog::doDump(ELevel level, const char *file, int line, const char *prefix, 
 
 	for (unsigned i(0); i < sz; i += config::HEXDUMP_ROWS)
 	{
-		s = util::format("%04x %s | ", i, prefix);
+		s = util::format("%s %04x | ", prefix, i);
 
 		unsigned l(sz - i);
 		if (l > config::HEXDUMP_ROWS)

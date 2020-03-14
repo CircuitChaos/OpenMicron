@@ -20,7 +20,7 @@ namespace config
 	static const unsigned PACKET_SIZE	= 0x10;
 
 	// FULL_MEMORY_SIZE is number of bytes read by the original utility
-	static const unsigned FULL_MEMORY_SIZE	= 0x32a0;
+	static const unsigned FULL_MEMORY_SIZE	= 0x4000;
 	static const unsigned CHAN_MEMORY_SIZE	= 0x1990;
 
 	// this is the theoretical size of model name that radio can
