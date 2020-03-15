@@ -6,6 +6,7 @@ Some random facts:
 - only first 16kB (0x4000) is used (next 16kB is filled with 0xff)
 - original program reads only 0x32a0 (12960) bytes
 - original program reads data in 16-byte chunks
+- I decided to read only 0x1990 bytes into .omi file by default
 
 What I found in the memory map:
 
@@ -71,16 +72,16 @@ ofs	size	meaning
 0x09	1	flags 1
 0x0a	1	flags 2
 0x0b	1	ctcss flags
-0x0c	1	rx ctcss index (0x14 = 127.3, 0x15 = 131.8)
-0x0d	1	tx ctcss index (0 = 62.5, 1 = 67.0, 0x14 = 127.3)
+0x0c	1	rx ctcss index (0x14 = 127.3, 0x15 = 131.8, 0x33 = define)
+0x0d	1	tx ctcss index (0 = 62.5, 1 = 67.0, 0x14 = 127.3, 0x33 = define)
 0x0e	1	rx dcs index (0x03 = 003, 0x0a = 012)
-0x0f	1	rx dcs invert flag (0 = normal, 2 = inverted)
+0x0f	1	rx dcs flags
 0x10	1	tx dcs index (0x05 = 005, without it's 0x11)
-0x11	1	tx dcs invert flag (0 = normal, 2 = inverted)
+0x11	1	tx dcs flags
 0x12	1	bcl mode (0 = off, 1 = rpt, 2 = busy)
 0x13	1	pttid flag (0 = off, 1 = begin, 2 = end, 3 = both, 0x10 = 5tone begin, 0x20 = 5tone end, 0x30 = 5tone both)
 0x14	1	squelch mode (0 = carrier, 1 = ctcss/dcs, 2 = optional signaling)
-0x15	1	optional signaling flag (0 = off, 1 = dtmf, 3 = 5Tone)
+0x15	1	optional signaling flag (0 = off, 1 = dtmf, 3 = 5tone)
 0x16	1	?
 0x17	1	?
 0x18	1	?
@@ -111,7 +112,18 @@ ofs	size	meaning
 - bit 1: tx dcs (0 = off, 1 = on)
 - bit 0: tx ctcss (0 = off, 1 = on)
 
+dcs flags:
+- bit 7: ?
+- bit 6: ?
+- bit 5: ?
+- bit 4: ?
+- bit 3: ?
+- bit 2: ?
+- bit 1: invert (0 = off, 1 = on)
+- bit 0: msb of dcs
+
 Scan flags start at 0x1960 (bitmap) and end at 0x1978 (25 bytes).
 
 Byte 1 is for channels 1...8 (bit 0 = chan 1, bit 1 = chan 2, etc.), byte 
 2 for 9...15, and so on. 1 means that scanning is enabled.
+

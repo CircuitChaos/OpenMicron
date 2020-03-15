@@ -23,23 +23,15 @@ bool applet::CWrite::run(int argc, char * const argv[])
 		return false;
 
 	COmiFile of;
-	std::string err(of.read(cli.getFile()));
-	if (!err.empty())
-	{
-		loge("Error reading input file: %s", err.c_str());
+	if (!of.read(cli.getFile()))
 		return false;
-	}
 
 	std::auto_ptr<COmiFile> rf;
 	if (!cli.getRefFile().empty())
 	{
 		rf.reset(new COmiFile());
-		err = rf->read(cli.getRefFile());
-		if (!err.empty())
-		{
-			loge("Error reading reference file: %s", err.c_str());
+		if (!rf->read(cli.getRefFile()))
 			return false;
-		}
 
 		if (of.getOffset() != rf->getOffset() || of.getModel() != rf->getModel() || of.getData().size() != rf->getData().size())
 		{

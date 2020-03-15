@@ -41,17 +41,22 @@ COmiFile::COmiFile(): m_offset(0)
 {
 }
 
-// returns "" if read successful, or error string
-std::string COmiFile::read(const std::string &path)
+bool COmiFile::read(const std::string &path)
 {
 	logd("About to read file %s", path.c_str());
 	CRawReader r(path);
 	if (!r.isOpen())
-		return util::format("%s: open error", path.c_str());
+	{
+		loge("%s: open error", path.c_str());
+		return false;
+	}
 
 	SHdr hdr;
 	if (!r(&hdr, sizeof(hdr)))
-		return util::format("%s: header read error", path.c_str());
+	{
+		loge("%s: header read error", path.c_str());
+		return false;
+	}
 
 	const uint32_t hdrCrc(SHdr::crcToHost(hdr.crc32));
 	hdr.crc32 = 0;
@@ -60,38 +65,55 @@ std::string COmiFile::read(const std::string &path)
 
 	hdr.toHost();
 	if (hdr.magic != MAGIC)
-		return util::format("%s: invalid magic; maybe not an .omi file?", path.c_str());
+	{
+		loge("%s: invalid magic; maybe not an .omi file?", path.c_str());
+		return false;
+	}
 
 	if (hdr.version != 1)
-		return util::format("%s: invalid version; maybe written with newer utility?", path.c_str());
+	{
+		loge("%s: invalid version; maybe written with newer utility?", path.c_str());
+		return false;
+	}
 
 	logd("Data offset: %u (0x%04x) bytes", hdr.offset, hdr.offset);
 	logd("Data size: %u (0x%04x) bytes", hdr.size, hdr.size);
 	logd("Model size: %u (0x%02x) bytes", hdr.modelSize, hdr.modelSize);
 
 	if (hdr.size == 0)
-		return util::format("%s: file does not contain data", path.c_str());
+	{
+		loge("%s: file does not contain data", path.c_str());
+		return false;
+	}
 
 	m_offset = hdr.offset;
 	m_data.resize(hdr.size);
 	m_model.assign((const char *) hdr.model, xmin(hdr.modelSize, sizeof(hdr.model)));
 
 	if (!r(&m_data[0], m_data.size()))
-		return util::format("%s: data read error", path.c_str());
+	{
+		loge("%s: data read error", path.c_str());
+		return false;
+	}
 
 	uint8_t testByte;
 	if (r(&testByte, sizeof(testByte)))
-		return util::format("%s: excessive data at the end of file", path.c_str());
+	{
+		loge("%s: excessive data at the end of file", path.c_str());
+		return false;
+	}
 
 	calcCrc = util::crc32(calcCrc, &m_data[0], m_data.size());
 	if (calcCrc != hdrCrc)
-		return util::format("%s: CRC32 mismatch (calculated 0x%08x, read 0x%08x)", path.c_str(), calcCrc, hdrCrc);
+	{
+		loge("%s: CRC32 mismatch (calculated 0x%08x, read 0x%08x)", path.c_str(), calcCrc, hdrCrc);
+		return false;
+	}
 
-	return "";
+	return true;
 }
 
-// returns "" if write successful, or error string
-std::string COmiFile::write(const std::string &path) const
+bool COmiFile::write(const std::string &path) const
 {
 	SHdr hdr;
 
@@ -117,18 +139,30 @@ std::string COmiFile::write(const std::string &path) const
 
 	CRawWriter w(path);
 	if (!w.isOpen())
-		return util::format("%s: open error", path.c_str());
+	{
+		loge("%s: open error", path.c_str());
+		return false;
+	}
 
 	if (!w(&hdr, sizeof(hdr)))
-		return util::format("%s: header write error", path.c_str());
+	{
+		loge("%s: header write error", path.c_str());
+		return false;
+	}
 
 	if (!w(&m_data[0], m_data.size()))
-		return util::format("%s: data write error", path.c_str());
+	{
+		loge("%s: data write error", path.c_str());
+		return false;
+	}
 
 	if (!w.close())
-		return util::format("%s: close error", path.c_str());
+	{
+		loge("%s: close error", path.c_str());
+		return false;
+	}
 
-	return "";
+	return true;
 }
 
 uint16_t COmiFile::getOffset() const

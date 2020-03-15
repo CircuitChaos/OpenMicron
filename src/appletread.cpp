@@ -61,12 +61,8 @@ bool applet::CRead::run(int argc, char * const argv[])
 		return false;
 	}
 
-	const std::string err(of.write(cli.getFile()));
-	if (!err.empty())
-	{
-		loge("Error writing file: %s", err.c_str());
+	if (!of.write(cli.getFile()))
 		return false;
-	}
 
 	return true;
 }

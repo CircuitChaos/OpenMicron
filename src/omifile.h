@@ -15,11 +15,8 @@ class COmiFile
 public:
 	COmiFile();
 
-	// returns "" if read successful, or error string
-	std::string read(const std::string &path);
-
-	// returns "" if write successful, or error string
-	std::string write(const std::string &path) const;
+	bool read(const std::string &path);
+	bool write(const std::string &path) const;
 
 	uint16_t getOffset() const;
 	void setOffset(uint16_t offset);
