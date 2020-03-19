@@ -23,8 +23,6 @@ namespace config
 	static const unsigned FULL_MEMORY_SIZE	= 0x4000;
 	static const unsigned CHAN_MEMORY_SIZE	= 0x1990;
 
-	static const unsigned NUM_CHANNELS	= 200;
-
 	// this is the theoretical size of model name that radio can
 	// send (it's truncated to 16 bytes in .omi file anyway). any
 	// data longer than this will trigger protocol error.

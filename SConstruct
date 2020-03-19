@@ -10,6 +10,7 @@ def getGitHash():
 env = Environment()
 env['CCFLAGS']	= '-Wall -Wextra -std=c++11 -O2 -g -DGIT_HASH=' + getGitHash()
 env['CPPPATH']	= 'src'
+env['LIBS'] = 'csv'
 
 env.VariantDir('build', 'src', duplicate = 0)
 env.AlwaysBuild('build/version.o')

@@ -28,10 +28,15 @@ bool CRawReader::isOpen() const
 	return m_fp;
 }
 
-bool CRawReader::operator()(void *p, size_t sz)
+bool CRawReader::operator()(void *p, size_t sz, size_t *outsz)
 {
 	xassert(isOpen(), "Attempted read from closed file");
-	return fread(p, sz, 1, m_fp) == 1;
+
+	const size_t rs(fread(p, 1, sz, m_fp));
+	if (outsz)
+		*outsz = rs;
+
+	return rs == sz;
 }
 
 CRawWriter::CRawWriter(const std::string &path): m_path(path)

@@ -17,9 +17,11 @@
 #include "appletread.h"
 #include "appletwrite.h"
 #include "appletexport.h"
+#include "appletimport.h"
 #include "cliread.h"
 #include "cliwrite.h"
 #include "cliexport.h"
+#include "cliimport.h"
 
 static void help()
 {
@@ -34,9 +36,8 @@ static void help()
 	cli::CExport ce;
 	summaries.push_back(ce.getSummary());
 
-	// cli::CImport ci;
-	// summaries.push_back(ci.getSummary());
-	// xxx do above for other applets too
+	cli::CImport ci;
+	summaries.push_back(ci.getSummary());
 
 	printf(
 		"Open Micron version %s (commit hash %s)\n"
@@ -61,17 +62,14 @@ static int main2(int argc, char * const argv[])
 
 	std::string av1(argv[1]);
 	std::auto_ptr<applet::CBase> a;
-	// xxx uncomment when next applets are ready
 	if (av1 == "read")
 		a.reset(new applet::CRead());
 	else if (av1 == "write")
 		a.reset(new applet::CWrite());
 	else if (av1 == "export")
 		a.reset(new applet::CExport());
-	/*
 	else if (av1 == "import")
 		a.reset(new applet::CImport());
-	*/
 
 	if (!a.get())
 	{

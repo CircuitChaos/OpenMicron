@@ -11,9 +11,55 @@
 
 namespace impexp
 {
-	static const char COMMENT[]	= "comment";
-	static const char WELCOME[]	= "welcome message";
-	static const char CHANNEL[]	= "channel";
+	namespace strings
+	{
+		static const char COMMENT[]		= "comment";
+		static const char WELCOME[]		= "welcome message";
+		static const char CHANNEL[]		= "channel";
+
+		static const char NO[]			= "no";
+		static const char YES[]			= "yes";
+
+		static const char ENCDEC_NONE[]		= "none";
+		static const char ENCDEC_CTCSS[]	= "CTCSS";
+		static const char ENCDEC_DCS[]		= "DCS";
+
+		static const char SQL_CARRIER[]		= "carrier";
+		static const char SQL_CTSDCS[]		= "ctsdcs";
+		static const char SQL_OPTSIG[]		= "optsig";
+
+		static const char TXP_OFF[]		= "off";
+		static const char TXP_LOW[]		= "low";
+		static const char TXP_MEDIUM[]		= "medium";
+		static const char TXP_HIGH[]		= "high";
+
+		static const char BCL_OFF[]		= "off";
+		static const char BCL_RPT[]		= "rpt";
+		static const char BCL_BUSY[]		= "busy";
+
+		static const char PTTID_OFF[]		= "off";
+		static const char PTTID_DTMF[]		= "dtmf";
+		static const char PTTID_5TONE[]		= "5tone";
+		static const char PTTID_SEPARATOR	= ':';
+		static const char PTTID_BEGIN[]		= "begin";
+		static const char PTTID_END[]		= "end";
+		static const char PTTID_BOTH[]		= "both";
+
+		static const char OPTSIG_OFF[]		= "off";
+		static const char OPTSIG_DTMF[]		= "dtmf:M";
+		static const char OPTSIG_5TONE[]	= "5tone:";
+
+		static const char SPACING_125[]		= "12.5";
+		static const char SPACING_20[]		= "20.0";
+		static const char SPACING_25[]		= "25.0";
+
+		static const char DCS_INVERT_FLAG	= 'i';
+	}
+
+	static const unsigned NUM_CHANNELS	= 200;
+	static const unsigned SCANNING_OFFSET	= 0x1960;
+	static const unsigned WELCOME_OFFSET	= 0x1980;
+	static const unsigned WELCOME_SIZE	= 7;
 
 	static const char * const CTSTBL[] =
 	{
@@ -68,7 +114,7 @@ namespace impexp
 		"241.8",	// 0x30
 		"250.3",	// 0x31
 		"254.1",	// 0x32
-		"defined",	// 0x33
+		"def",		// 0x33
 	};
 
 	struct SChannel
@@ -90,7 +136,7 @@ namespace impexp
 			};
 
 			EShiftDir shiftdir:2;
-			uint8_t txpower:2;
+			ETxPwr txpwr:2;
 			uint8_t dunno:3;
 			bool talkaround:1;
 		} __attribute__((packed));
@@ -170,10 +216,10 @@ namespace impexp
 		SDcsFlags rxdcsfl;
 		uint8_t txdcs;
 		SDcsFlags txdcsfl;
-		uint8_t bcl;
-		uint8_t pttid;
-		uint8_t sql;
-		uint8_t optsig;
+		EBcl bcl:8;
+		EPttId pttid:8;
+		ESql sql:8;
+		EOptSig optsig:8;
 		uint8_t dunno2;
 		uint8_t dunno3;
 		uint8_t dunno4;

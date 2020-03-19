@@ -16,7 +16,11 @@ public:
 	~CRawReader();
 
 	bool isOpen() const;
-	bool operator()(void *p, size_t sz);
+
+	// return value is true when all data has been read. if only
+	// a part has been, read, inspect outsz to determine how much
+	// and if any
+	bool operator()(void *p, size_t sz, size_t *outsz = NULL);
 
 private:
 	FILE *m_fp;

@@ -126,4 +126,3 @@ Scan flags start at 0x1960 (bitmap) and end at 0x1978 (25 bytes).
 
 Byte 1 is for channels 1...8 (bit 0 = chan 1, bit 1 = chan 2, etc.), byte 
 2 for 9...15, and so on. 1 means that scanning is enabled.
-

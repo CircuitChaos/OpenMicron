@@ -13,9 +13,9 @@
 cli::CExport::CExport(): m_isText(false)
 {
 	add('i', true, "Input .omi file path");
-	add('o', true, "Output .csv or .txt file path");
-	add('t', false, "Use text format (default is CSV)");
-	setSummary("export", "-i <file.omi> -o <file.csv>");
+	add('t', true, "Output text file path");
+	add('c', true, "Output .csv file path");
+	setSummary("export", "-i <file.omi> -t <file.txt>|-c <file.csv>");
 }
 
 const std::string &cli::CExport::getInput() const
@@ -35,14 +35,26 @@ bool cli::CExport::isText() const
 
 std::string cli::CExport::parsed()
 {
+	if (!exists('c') && !exists('t'))
+		return "One -c or -t must be specified";
+
+	if (exists('c') && exists('t'))
+		return "Only one of -c or -t must be specified";
+
 	if (!exists('i'))
 		return "Input file not specified";
 
-	if (!exists('o'))
-		return "Output file not specified";
+	if (exists('c'))
+	{
+		m_output = get('c');
+		m_isText = false;
+	}
+	else
+	{
+		m_output = get('t');
+		m_isText = true;
+	}
 
 	m_input = get('i');
-	m_output = get('o');
-	m_isText = exists('t');
 	return "";
 }

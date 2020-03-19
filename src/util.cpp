@@ -99,3 +99,26 @@ std::string util::toPrintable(const std::string &s)
 	}
 	return rs;
 }
+
+std::vector<std::string> util::tokenize(const std::string &src, char sep)
+{
+	std::vector<std::string> v;
+	if (src.empty())
+		return v;
+
+	std::string tmp;
+
+	for (auto &ch: src)
+	{
+		if (ch == sep)
+		{
+			v.push_back(tmp);
+			tmp.clear();
+		}
+		else
+			tmp.push_back(ch);
+	}
+
+	v.push_back(tmp);
+	return v;
+}
