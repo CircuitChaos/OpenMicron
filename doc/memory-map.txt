@@ -39,9 +39,12 @@ offset	size	meaning
 0x1c80	5216	0x00
 0x30e0	16	?, first byte 0x01, rest 0x00
 0x30f0	272	0xff
-0x3200	32	?
+0x3200	16	?
+0x3210	16	mic key configuration, see below
 0x3220	32	0x00
-0x3240	96	?
+0x3240	16	?
+0x3250	16	function key configuration, see below
+0x3260	64	?
 0x32a0	2144	0xff
 0x3b00	11	model name and version: "MICRON<00>V100"
 0x3b0b	9	?: 01 00 01 00 01 02 ff ff ff
@@ -139,3 +142,73 @@ in the radio, populated) and 0 means that it's disabled (unused, channel knob
 skips it).
 
 In scan flags, 1 means that scanning is enabled and 0 that it's not.
+
+=== Mic key configuration ===
+
+Data at offset 0x3210:
+
+- 02 00 0f 00 (no idea what this is)
+- PA mic key
+- PB mic key
+- PC mic key
+- PD mic key
+- 00 00 00 2c 00 00 00 00
+
+Mic keys:
+
+- 00: ?
+- 01: ?
+- 02: V/M
+- 03: SQL
+- 04: VOL
+- 05: POW
+- 06: CDT
+- 07: REV
+- 08: SCN
+- 09: CAL
+- 0a: TALK
+- 0b: BND
+- 0c: SFT
+- 0d: MON
+- 0e: DIR
+- 0f: TRF
+- 10: RDW
+
+=== Function key configuration ===
+
+Data at offset 0x3250:
+
+- Key mode 1 P1
+- Key mode 1 P2
+- Key mode 1 P3
+- Key mode 1 P4
+- Key mode 1 P5
+- Key mode 1 P6
+- Key mode 2 P1
+- Key mode 2 P2
+- Key mode 2 P3
+- Key mode 2 P4
+- Key mode 2 P5
+- Key mode 2 P6
+- 00 00 00 00
+
+Function keys:
+
+- 00: ?
+- 01: A/B
+- 02: V/M
+- 03: SQL
+- 04: VOL
+- 05: POW
+- 06: CDT
+- 07: REV
+- 08: SCN
+- 09: CAL
+- 0a: TALK
+- 0b: BND
+- 0c: SFT
+- 0d: MON
+- 0e: DIR
+- 0f: TRF
+- 10: RDW
+- 11: NULL

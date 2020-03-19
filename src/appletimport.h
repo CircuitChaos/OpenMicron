@@ -49,6 +49,7 @@ namespace applet
 
 		bool importWelcome(COmiFile &omi, const std::vector<std::string> &line);
 		bool importChannel(COmiFile &omi, const std::vector<std::string> &line);
+		bool importKeys(COmiFile &omi, const std::vector<std::string> &line);
 
 		bool importName(const std::string &field);
 		bool importRxFreq(const std::string &field);
@@ -71,5 +72,8 @@ namespace applet
 		bool getCtsIdx(const std::string &number, size_t &idx, bool allowDef);
 		bool convertFreq(uint8_t out[4], const std::string &in);
 		bool checkFreqSanity(const uint8_t freq[4]);
+
+		bool importFuncKey(uint8_t *out, const std::string &in);
+		bool importMicKey(uint8_t *out, const std::string &in);
 	};
 }

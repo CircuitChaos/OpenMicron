@@ -41,9 +41,9 @@ bool applet::CImport::run(int argc, char * const argv[])
 		return false;
 	}
 
-	if (omi.getData().size() < config::CHAN_MEMORY_SIZE)
+	if (omi.getData().size() != config::MEMORY_SIZE)
 	{
-		logError("too little data in input file");
+		logError("input file does not contain radio memory (size mismatch)");
 		return false;
 	}
 
@@ -66,6 +66,11 @@ bool applet::CImport::run(int argc, char * const argv[])
 		else if (line[0] == strings::CHANNEL)
 		{
 			if (!importChannel(omi, line))
+				return false;
+		}
+		else if (line[0] == strings::KEYS)
+		{
+			if (!importKeys(omi, line))
 				return false;
 		}
 		else
@@ -658,4 +663,66 @@ bool applet::CImport::checkFreqSanity(const uint8_t /* freq */ [4])
 {
 	// xxx actually implement it
 	return true;
+}
+
+bool applet::CImport::importKeys(COmiFile &omi, const std::vector<std::string> &line)
+{
+	if (line.size() != 17)
+	{
+		logError("invalid keys format in input file (too short)");
+		return false;
+	}
+
+	for (unsigned i(0); i < 12; ++i)
+		if (!importFuncKey(&omi.getData()[FUNC_KEYS_OFFSET + i], line[i + 1]))
+			return false;
+
+	for (unsigned i(0); i < 4; ++i)
+		if (!importMicKey(&omi.getData()[MIC_KEYS_OFFSET + i], line[i + 1 + 12]))
+			return false;
+
+	return true;
+}
+
+// xxx: these two methods are similar, need to make one generic instead
+
+bool applet::CImport::importFuncKey(uint8_t *out, const std::string &in)
+{
+	if (in.size() == 4 && in.substr(0, 2) == "0x")
+	{
+		logn("Warning: importing function key as hex literal (%s)", in.c_str());
+		*out = strtol(in.substr(2).c_str(), NULL, 16);
+		return true;
+	}
+
+	for (unsigned i(0); i < sizeof(FUNC_KEYS) / sizeof(*FUNC_KEYS); ++i)
+		if (in == FUNC_KEYS[i])
+		{
+			*out = i + 1;
+			return true;
+		}
+
+	logError("invalid func key %s", in.c_str());
+	return false;
+}
+
+bool applet::CImport::importMicKey(uint8_t *out, const std::string &in)
+{
+	if (in.size() == 4 && in.substr(0, 2) == "0x")
+	{
+		logn("Warning: importing mic key as hex literal (%s)", in.c_str());
+		*out = strtol(in.substr(2).c_str(), NULL, 16);
+		return true;
+	}
+
+	for (unsigned i(0); i < sizeof(MIC_KEYS) / sizeof(*MIC_KEYS); ++i)
+		if (in == MIC_KEYS[i])
+		{
+			*out = i + 2;
+			return true;
+		}
+
+	logError("invalid mic key %s", in.c_str());
+	return false;
+
 }

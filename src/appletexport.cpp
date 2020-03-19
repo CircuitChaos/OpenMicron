@@ -34,15 +34,18 @@ bool applet::CExport::run(int argc, char * const argv[])
 		return false;
 	}
 
-	if (infile.getData().size() < config::CHAN_MEMORY_SIZE)
+	if (infile.getData().size() != config::MEMORY_SIZE)
 	{
-		loge("Too little data in input file");
+		loge(".omi file does not contain radio memory (size mismatch)");
 		return false;
 	}
 
 	CTextFile tf;
 
 	tf.add(2, strings::WELCOME, util::toPrintable(std::string((const char *) &infile.getData()[WELCOME_OFFSET], WELCOME_SIZE)).c_str());
+	tf.add(0);
+	outputKeysComment(tf);
+	outputKeys(tf, infile.getData());
 	tf.add(0);
 	outputChannelComment(tf);
 	outputChannels(tf, infile.getData());
@@ -103,6 +106,28 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		NULL);
 }
 
+void applet::CExport::outputKeysComment(CTextFile &tf)
+{
+	tf.add(-1, strings::COMMENT,
+		"P1",
+		"P2",
+		"P3",
+		"P4",
+		"P5",
+		"P6",
+		"Alt P1",
+		"Alt P2",
+		"Alt P3",
+		"Alt P4",
+		"Alt P5",
+		"Alt P6",
+		"Mic PA",
+		"Mic PB",
+		"Mic PC",
+		"Mic PD",
+		NULL);
+}
+
 void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &data)
 {
 	for (unsigned i(0); i < NUM_CHANNELS; ++i)
@@ -146,6 +171,21 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		v.push_back(getDefCts(chanNo, chan->defcts));
 		tf.add(v);
 	}
+}
+
+void applet::CExport::outputKeys(CTextFile &tf, const std::vector<uint8_t> &data)
+{
+	std::vector<std::string> v;
+
+	v.push_back(strings::KEYS);
+
+	for (unsigned i(0); i < 12; ++i)
+		v.push_back(getFuncKey(data[FUNC_KEYS_OFFSET + i]));
+
+	for (unsigned i(0); i < 4; ++i)
+		v.push_back(getMicKey(data[MIC_KEYS_OFFSET + i]));
+
+	tf.add(v);
 }
 
 void applet::CExport::debugDumpChannel(const SChannel *chan)
@@ -439,4 +479,26 @@ std::string applet::CExport::getDefCts(unsigned /* chanNo */, const uint8_t *def
 {
 	const uint16_t value(defCts[0] | ((uint16_t) defCts[1] << 8));
 	return util::format("%u.%u", value / 10, value % 10);
+}
+
+std::string applet::CExport::getFuncKey(unsigned key)
+{
+	if (key < 0x01 || key > 0x11)
+	{
+		loge("Warning: could not decode func key code 0x%02x, setting literal", key);
+		return util::format("0x%02x", key);
+	}
+
+	return FUNC_KEYS[key - 1];
+}
+
+std::string applet::CExport::getMicKey(unsigned key)
+{
+	if (key < 0x02 || key > 0x10)
+	{
+		loge("Warning: could not decode mic key code 0x%02x, setting literal", key);
+		return util::format("0x%02x", key);
+	}
+
+	return MIC_KEYS[key - 1];
 }

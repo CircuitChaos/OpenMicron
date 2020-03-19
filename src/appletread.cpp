@@ -39,7 +39,7 @@ bool applet::CRead::run(int argc, char * const argv[])
 	of.setOffset(0);
 	of.setModel(model);
 
-	const uint16_t size(cli.isFull() ? config::FULL_MEMORY_SIZE : config::CHAN_MEMORY_SIZE);
+	const uint16_t size(config::MEMORY_SIZE);
 
 	std::vector<uint8_t> &data(of.getData());
 	data.resize(size);

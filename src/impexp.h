@@ -16,6 +16,7 @@ namespace impexp
 		static const char COMMENT[]		= "comment";
 		static const char WELCOME[]		= "welcome message";
 		static const char CHANNEL[]		= "channel";
+		static const char KEYS[]		= "keys";
 
 		static const char NO[]			= "no";
 		static const char YES[]			= "yes";
@@ -61,6 +62,9 @@ namespace impexp
 	static const unsigned SCANNING_OFFSET	= 0x1960;
 	static const unsigned WELCOME_OFFSET	= 0x1980;
 	static const unsigned WELCOME_SIZE	= 7;
+
+	static const unsigned FUNC_KEYS_OFFSET	= 0x3250;
+	static const unsigned MIC_KEYS_OFFSET	= 0x3214;
 
 	static const char * const CTSTBL[] =
 	{
@@ -116,6 +120,23 @@ namespace impexp
 		"250.3",	// 0x31
 		"254.1",	// 0x32
 		"def",		// 0x33
+	};
+
+	static const char * const FUNC_KEYS[] =
+	{
+		"A/B", "V/M", "SQL", "VOL",
+		"POW", "CDT", "REV", "SCN",
+		"CAL", "TALK", "BND", "SFT",
+		"MON", "DIR", "TRF", "RDW",
+		"NULL",
+	};
+
+	static const char * const MIC_KEYS[] =
+	{
+		"V/M", "SQL", "VOL", "POW",
+		"CDT", "REV", "SCN", "CAL",
+		"TALK", "BND", "SFT", "MON",
+		"DIR", "TRF", "RDW",
 	};
 
 	struct SChannel

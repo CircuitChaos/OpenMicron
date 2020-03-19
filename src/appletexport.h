@@ -22,7 +22,9 @@ namespace applet
 
 	private:
 		static void outputChannelComment(CTextFile &tf);
+		static void outputKeysComment(CTextFile &tf);
 		static void outputChannels(CTextFile &tf, const std::vector<uint8_t> &data);
+		static void outputKeys(CTextFile &tf, const std::vector<uint8_t> &data);
 		static void debugDumpChannel(const impexp::SChannel *chan);
 		static std::string getModel(const uint8_t *p);
 		static std::string getFreq(unsigned chanNo, const uint8_t *freq, bool condensed);
@@ -37,5 +39,7 @@ namespace applet
 		static std::string getOptSig(unsigned chanNo, impexp::SChannel::EOptSig optsig, uint8_t dtmf);
 		static std::string getSpacing(unsigned chanNo, impexp::SChannel::SFlags2::ESpacing spacing);
 		static std::string getDefCts(unsigned chanNo, const uint8_t *defCts);
+		static std::string getFuncKey(unsigned key);
+		static std::string getMicKey(unsigned key);
 	};
 }

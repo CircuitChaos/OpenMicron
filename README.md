@@ -4,7 +4,7 @@ An utility to program **CRT Micron UV** (and possibly **AnyTone AT-778UV** and *
 
 ## Objective
 
-**CRT Micron UV** is an inexpensive dual-band FM transceiver. It is possible to order (or make) a cable for it and program it from the PC.
+**CRT Micron UV** is an inexpensive dual-band 2m and 70cm FM transceiver. It is possible to order (or make: http://iz3zvo.altervista.org/build-program-cable-anytone-at-5888uv-intek-hr-2040/) a cable for it and program it from the PC.
 
 Unfortunately, at the time of writing there's no known way to program these radios under Linux. There's a proprietary, Windows-only software available and it looks like some people succeeded running it under Wine, but then radio communication does not work. Even under Windows, adding and editing channels in this program is quite counterintuitive, to say the least.
 
@@ -76,6 +76,8 @@ File format is explained in detail in /src/omifile.h/ header file, so there's no
 
 Before writing memory, software queries the radio for its model name and refuses to write the .omi file if model name does not match the one stored in the file (for example, if you have an .omi file from CRT Micron UV, but want to program AT-778UV with it). Maybe it's harmless and should be removed, maybe it's not. It needs to be checked and confirmed.
 
+.omi file header is 32 (0x20) bytes long. Therefore, when working on the memory map and reading the .omi file, remove the header with `dd bs=32 skip=1 if=file.omi of=file.bin` and work with binary file instead.
+
 ## Reporting bugs
 
 If something doesn't work as expected, please report the bug using the GitHub bug tracker, but be sure to run the utility with *-d* option to produce debug output. If your radio gets bricked, I might or might not be able to help, but by all means report what happened, so I can react somehow (write a huge warning here, add more protections to the software, or something else).
@@ -99,13 +101,13 @@ What's left to be done:
 * Add checking of RX and TX frequency sanity during import (if it falls in the 2m/70cm range)
 * Extensively test all functions (I'm not using DTMF or 5Tone, for instance)
 
-If you want to help adding particular configuration option, do the following:
+If you want to help adding particular configuration option, please do the following:
 
-1. Read full radio memory with `omi read -f` (only channel table is read by default)
+1. Read full radio memory with `omi read`
 2. Read the radio memory in the proprietary programming software
 3. Make the change (only single change) in configuration
 4. Write the radio memory in the proprietary programming software
-5. Again read full radio memory with `omi read -f`
+5. Again read full radio memory with `omi read`
 6. Send me two .omi files (or hex diff between them + model name) and information about what did you change
 
 ## Further documentation
