@@ -137,7 +137,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 
 	m_chan = (SChannel *) &omi.getData()[(chanNo - 1) * 32];
 	m_errCtx.chanNo = chanNo;
-	if (line.size() == 2)
+	if (line.size() == 2 || line[2].empty())
 	{
 		logd("Removing channel %u", chanNo);
 		memset(m_chan, 0xff, sizeof(SChannel));
@@ -297,14 +297,22 @@ bool applet::CImport::importCts(const std::string &field, bool isEncoder)
 
 bool applet::CImport::importDcs(const std::string &field, bool isEncoder)
 {
-	if (field.size() != 3 && (field.size() != 4 || field[0] != strings::DCS_INVERT_FLAG))
+	bool invert(false);
+	std::string sdcs(field);
+	if (field.size() >= 1 && field[0] == strings::DCS_INVERT_FLAG)
 	{
-		logError("invalid %s DCS setting (%s)", isEncoder ? "TX" : "RX", field.c_str());
+		invert = true;
+		sdcs = field.substr(1);
+	}
+
+	if (sdcs.empty())
+	{
+		logError("invalid %s DCS setting (empty)", isEncoder ? "TX" : "RX");
 		return false;
 	}
 
-	const bool invert(field.size() == 4);
-	const std::string sdcs(invert ? field.substr(1) : field);
+	if (sdcs.size() < 3)
+		sdcs = std::string(3 - sdcs.size(), '0') + sdcs;
 
 	uint16_t dcs16(strtol(sdcs.c_str(), NULL, 8));
 	if (util::format("%03o", dcs16) != sdcs)
