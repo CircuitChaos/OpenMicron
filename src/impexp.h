@@ -57,6 +57,7 @@ namespace impexp
 	}
 
 	static const unsigned NUM_CHANNELS	= 200;
+	static const unsigned CHAN_EN_OFFSET	= 0x1940;
 	static const unsigned SCANNING_OFFSET	= 0x1960;
 	static const unsigned WELCOME_OFFSET	= 0x1980;
 	static const unsigned WELCOME_SIZE	= 7;
@@ -226,4 +227,19 @@ namespace impexp
 		uint8_t chname[5];
 		uint8_t defcts[2];
 	} __attribute__((packed));
+
+	static inline bool getFlag(const uint8_t *memory, unsigned position)
+	{
+		return memory[position / 8] & (1 << (position % 8));
+	}
+
+	static inline void setFlag(uint8_t *memory, unsigned position)
+	{
+		memory[position / 8] |= 1 << (position % 8);
+	}
+
+	static inline void clrFlag(uint8_t *memory, unsigned position)
+	{
+		memory[position / 8] &= ~(1 << (position % 8));
+	}
 }

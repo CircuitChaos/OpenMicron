@@ -141,7 +141,8 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	{
 		logd("Removing channel %u", chanNo);
 		memset(m_chan, 0xff, sizeof(SChannel));
-		omi.getData()[SCANNING_OFFSET + (chanNo - 1) / 8] &= ~(1 << ((chanNo - 1) % 8));
+		clrFlag(&omi.getData()[CHAN_EN_OFFSET], chanNo - 1);
+		clrFlag(&omi.getData()[SCANNING_OFFSET], chanNo - 1);
 		return true;
 	}
 
@@ -152,6 +153,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	}
 
 	logd("Importing channel %u", chanNo);
+	setFlag(&omi.getData()[CHAN_EN_OFFSET], chanNo - 1);
 
 	bool scanning;
 	unsigned idx(2);
@@ -176,9 +178,9 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	if (!importDefCts(line[idx++])) return false;
 
 	if (!scanning)
-		omi.getData()[SCANNING_OFFSET + (chanNo - 1) / 8] &= ~(1 << ((chanNo - 1) % 8));
+		clrFlag(&omi.getData()[SCANNING_OFFSET], chanNo - 1);
 	else
-		omi.getData()[SCANNING_OFFSET + (chanNo - 1) / 8] |= 1 << ((chanNo - 1) % 8);
+		setFlag(&omi.getData()[SCANNING_OFFSET], chanNo - 1);
 
 	return true;
 }
@@ -578,9 +580,7 @@ bool applet::CImport::convertName(std::string &out, const std::string &in, unsig
 		if (ch == 0x20 || ch == '-')
 			continue;
 
-		// this might not be fully true. feel free to report the issue to relax this test.
-		// xxx: check how it works if space is in the middle, maybe radio treats it as a terminating character?
-		// if yes, we'll need to change appletexport too.
+		// this might not be fully true. feel free to report the issue to relax this test
 		logError("invalid character '%c' in string '%s'", ch, in.c_str());
 		logError("only uppercase 7-bit ASCII letters, digits, dashes and spaces are allowed");
 		return false;

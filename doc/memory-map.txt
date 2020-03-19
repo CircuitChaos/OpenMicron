@@ -14,8 +14,10 @@ offset	size	meaning
 ---------------------------------------------------
 0x0000	6400	channel table; 200 channels, 32 bytes each
 0x1900	96	to be determined (maybe config?)
+0x1940	25	channel enablement flags, see below
+0x1959	7	0x00, probably padding for channel enablement flags
 0x1960	25	scan flags, see below
-0x1979	7	0x00, maybe padding for scan flags
+0x1979	7	0x00, probably padding for scan flags
 0x1980	7	welcome message, right-padded with spaces
 0x1987	9	0x00
 0x1990	320	0xff
@@ -122,7 +124,18 @@ dcs flags:
 - bit 1: invert (0 = off, 1 = on)
 - bit 0: msb of dcs
 
-Scan flags start at 0x1960 (bitmap) and end at 0x1978 (25 bytes).
+Channel enablement flags start at 0x1940 (bitmap) and end at 0x1958 (25 
+bytes).
+
+Scan flags start at 0x1960 (bitmap) and end at 0x1978 (also 25 bytes).
+
+25 bytes, because 25 * 8 = 200 and there are 200 channels in the radio.
 
 Byte 1 is for channels 1...8 (bit 0 = chan 1, bit 1 = chan 2, etc.), byte 
-2 for 9...15, and so on. 1 means that scanning is enabled.
+2 for 9...15, and so on.
+
+In channel enablement flags, bit 1 means that channel is enabled (available 
+in the radio, populated) and 0 means that it's disabled (unused, channel knob 
+skips it).
+
+In scan flags, 1 means that scanning is enabled and 0 that it's not.

@@ -122,3 +122,6 @@ std::vector<std::string> util::tokenize(const std::string &src, char sep)
 	v.push_back(tmp);
 	return v;
 }
+
+void setBit(uint8_t *memory, size_t byte, uint8_t bit);
+void clrBit(uint8_t *memory, size_t byte, uint8_t bit);

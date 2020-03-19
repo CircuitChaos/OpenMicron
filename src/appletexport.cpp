@@ -113,7 +113,7 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		const SChannel *chan((const SChannel *) &data[i * 32]);
 		debugDumpChannel(chan);
 
-		if (!memcmp(chan->chname, "\x20\x20\x20\x20\x20", sizeof(chan->chname)) || !memcmp(chan->chname, "\xff\xff\xff\xff\xff", sizeof(chan->chname)))
+		if (!getFlag(&data[CHAN_EN_OFFSET], i) || !memcmp(chan->chname, "\x20\x20\x20\x20\x20", sizeof(chan->chname)) || !memcmp(chan->chname, "\xff\xff\xff\xff\xff", sizeof(chan->chname)))
 		{
 			logd("Channel %u is empty", chanNo);
 			tf.add(2, "channel", util::format("%u", chanNo).c_str());
@@ -139,7 +139,7 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		v.push_back(getBcl(chanNo, chan->bcl));
 		v.push_back(getPttId(chanNo, chan->pttid));
 		v.push_back(getOptSig(chanNo, chan->optsig, chan->flags3.dtmf));
-		v.push_back((data[SCANNING_OFFSET + i / 8] & (1 << (i % 8))) ? strings::YES : strings::NO);	// scanning
+		v.push_back(getFlag(&data[SCANNING_OFFSET], i) ? strings::YES : strings::NO);
 		v.push_back(chan->flags1.talkaround ? strings::YES : strings::NO);
 		v.push_back(chan->flags2.reverse ? strings::YES : strings::NO);
 		v.push_back(getSpacing(chanNo, chan->flags2.spacing));
