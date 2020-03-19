@@ -107,3 +107,7 @@ There's some documentation in __doc__ directory which might be helpful.
 * **comm-protocol.txt** – protocol used to communicate with the radio. I reverse-engineered it using __PortMon__ utility on Windows.
 * **memory-map.txt** – incomplete, reverse-engineered memory map of CRT Micron UV. This is work in progress!
 * **dat-file-format.txt** – incomplete, reverse-engineered format of the .dat file, used by the proprietary software. Probably not needed, but I did it before I had a chance to actually read the radio memory, so I keep it here.
+
+## Contact with the author
+
+I have a name and a HAM radio call sign, but I prefer to stay anonymous at this moment :) Please use the GitHub issue reporting system for the contact.
