@@ -17,6 +17,7 @@ env.AlwaysBuild('build/version.o')
 omi = env.Program('build/omi', Glob('build/*.cpp'))
 
 env.Install('/usr/local/bin', omi)
-env.Install('/usr/local/man/man1', 'doc/omi.1')
 
-env.Alias('install', ['/usr/local/bin', '/usr/local/man/man1'])
+# env.Install('/usr/local/man/man1', 'doc/omi.1')
+# env.Alias('install', ['/usr/local/bin', '/usr/local/man/man1'])
+env.Alias('install', '/usr/local/bin')
