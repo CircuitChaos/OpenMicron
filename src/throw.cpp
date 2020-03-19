@@ -1,6 +1,6 @@
 /**
  * \brief	Exception throwing
- * \author	Open Micron
+ * \author	Circuit Chaos
  * \date	2018-01-18
  */
 
