@@ -1,6 +1,6 @@
 /**
  * \brief	Exception throwing
- * \author	Adam Wysocki
+ * \author	Open Micron
  * \date	2018-01-18
  */
 
