@@ -142,7 +142,7 @@ Alternatively, you can always submit a pull request :)
 
 ## Further documentation
 
-There's some documentation in doc directory which might be helpful.
+There's some documentation in *doc* directory which might be helpful.
 
 * **comm-protocol.txt** – protocol used to communicate with the radio. I reverse-engineered it using PortMon utility on Windows.
 * **memory-map.txt** – incomplete, reverse-engineered memory map of CRT Micron UV. It's still work in progress!
