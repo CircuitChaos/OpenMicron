@@ -61,7 +61,7 @@ static int main2(int argc, char * const argv[])
 	}
 
 	std::string av1(argv[1]);
-	std::auto_ptr<applet::CBase> a;
+	std::unique_ptr<applet::CBase> a;
 	if (av1 == "read")
 		a.reset(new applet::CRead());
 	else if (av1 == "write")

@@ -26,7 +26,7 @@ bool applet::CWrite::run(int argc, char * const argv[])
 	if (!of.read(cli.getFile()))
 		return false;
 
-	std::auto_ptr<COmiFile> rf;
+	std::unique_ptr<COmiFile> rf;
 	if (!cli.getRefFile().empty())
 	{
 		rf.reset(new COmiFile());
