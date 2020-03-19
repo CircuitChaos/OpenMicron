@@ -54,7 +54,7 @@ Issue `omi -h` to see the command line summary for all applets, and `omi <applet
 
 ## .csv file format
 
-CSV is a portable, comma-separated file format to store tabular data. When importing it into LibreOffice or other spreadsheet editor, set following CSV parameters:
+CSV is a portable, comma-separated file format used to store tabular data. When importing it into LibreOffice or other spreadsheet editor, set the following CSV parameters:
 
 * Separated by: comma
 * Text delimiter: "
@@ -62,11 +62,11 @@ CSV is a portable, comma-separated file format to store tabular data. When impor
 
 ### Note on differential write mode
 
-**omi write** allows you to use *-r* to specify an optional reference file. This file is the original file, as read by **omi read**, before any changes have been made with **omi import**, and can be used to upload only changes instead of full memory data, which speeds up the process considerably. If radio was not used or programmed between reading memory with **omi read** and using this dump as a reference for **omi write**, then everything should be fine, but if not, you can possibly end up with garbled memory and bricked radio. Proceed with caution.
+**omi write** allows you to use *-r* to specify an optional reference file. This file is the original file, as read by **omi read**, before any changes have been made with **omi import**, and can be used to upload only changes instead of full memory data, which considerably speeds up the process. If radio was not used or programmed between reading memory with **omi read** and using this dump as a reference for **omi write**, then everything should be fine, but if not, you can possibly end up with garbled memory and bricked radio. Proceed with caution.
 
 ### Note on radio progress bar
 
-Note that progress bar on the radio is not fully reliable, as it displays 100% after channel table has been read. **omi read** reads full memory, so the progress bar will stay at 100% for some time. This is normal. To observe true progress on the computer, use *-v* option.
+Note that the progress bar displayed on the radio during reading and writing is not fully reliable, as it displays 100% after channel table has been read. **omi read** reads full memory, so the progress bar will stay at 100% for some time. This is normal. To observe true progress on the computer, use *-v* option.
 
 ### List of assignable key functions (for reference)
 
@@ -108,9 +108,9 @@ Before writing memory, software queries the radio for its model name and refuses
 
 ## Reporting bugs
 
-If something doesn't work as expected, please report issue using the GitHub bug tracker, but be sure to run the utility with *-d* option to produce debug output. If your radio gets bricked, I might or might not be able to help, but by all means report what happened, so I can react somehow (write a huge warning here, add more protections to the software, or something else).
+If something doesn't work as expected, please report an issue using the GitHub issue tracker, but be sure to run the utility with *-d* option to produce debug output. If your radio gets bricked, I might or might not be able to help, but by all means report what happened, so I can react somehow (write a huge warning here, add more protections to the software, or something else).
 
-I didn't disassemble my radio (yet), but **if** it keeps its data in the serially-accessible eeprom (like all other radios that I disassembled did), it might be possible to bring it back to life by externaly reprogramming the memory (with or without unsoldering). It will need to be investigated if such situation occurs, but I can't promise anything.
+I didn't disassemble my radio (yet), but **if** it keeps its data in the serially-accessible EEPROM (like all other radios that I disassembled did), it might be possible to bring it back to life by externaly reprogramming the memory, with or without unsoldering. It will need to be investigated if such situation happens, but I can't promise anything.
 
 ## Radio configuration
 
@@ -126,7 +126,7 @@ What's left to be done:
 * Make the utility portable to other POSIX-compatible systems
 * Add support for full radio configuration editing
 * Confirm that 5Tone setting for Optional Signalling is kept in the same place as DTMF
-* Add checking of RX and TX frequency sanity during import (if it falls in the 2m/70cm range)
+* Add validation of RX and TX frequencies during import (if they fall within the range supported by the radio)
 * Extensively test all functions (I'm not using DTMF or 5Tone, for instance)
 
 If you want to help adding particular configuration function, the following will be most helpful:
@@ -138,7 +138,7 @@ If you want to help adding particular configuration function, the following will
 5. Again read full radio memory with `omi read`
 6. Send me two .omi files (or hex diff between them + model name) and information about what exactly did you change
 
-Alternatively, you can always submit a PR :)
+Alternatively, you can always submit a pull request :)
 
 ## Further documentation
 
@@ -150,4 +150,4 @@ There's some documentation in doc directory which might be helpful.
 
 ## Contact with the author
 
-I have a name and a HAM radio call sign, but I prefer to stay anonymous :) Please use the GitHub issue reporting system for the contact.
+I have a name and a HAM radio call sign, but I prefer to stay anonymous :) Please use the GitHub issue reporting system for contact.
