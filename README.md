@@ -60,9 +60,55 @@ Issue `omi -h` to see the command line summary for all applets, and `omi <applet
 * Text delimiter: "
 * Column type for all fields: Text (select all fields and select Text in Column type box)
 
-### Note about differential upload mode
+### Note on differential upload mode
 
 **omi write** allows you to use -r to specify an optional reference file. This file is the original file, as read by **omi read**, before any changes have been made with **omi import**, and is used to upload only changes instead of full memory, which considerably speeds up the process. If radio was not used or programmed between reading the memory with **omi read** and using it as a reference for **omi write**, everything should be fine, but if not, you can possibly end up with garbled memory and bricked radio. Proceed with caution.
+
+### Note on radio progress bar
+
+Note that progress bar on the radio is not fully reliable, as it displays 100% after channel table has been read. **omi read** reads full memory, so the progress bar will stay at 100% for some time. This is normal. To observe true progress on the PC, use **-v** option.
+
+### List of key functions (for reference)
+
+This should probably go in a shortened form into comments in the .csv file, but for now it's here.
+
+Main keys (P1 to P6) can be programmed as:
+
+* A/B
+* V/M
+* SQL
+* VOL
+* POW
+* CDT
+* REV
+* SCN
+* CAL
+* TALK
+* BND
+* SFT
+* MON
+* DIR
+* TRF
+* RDW
+* NULL (isn't it a bug in the original program?)
+
+Mic keys (PA to PD) can be programmed as:
+
+* V/M
+* SQL
+* VOL
+* POW
+* CDT
+* REV
+* SCN
+* CAL
+* TALK
+* BND
+* SFT
+* MON
+* DIR
+* TRF
+* RDW
 
 ## .omi file format
 
@@ -96,7 +142,7 @@ What's left to be done:
 * Write proper manpage and – if software proves to be reliable – work with distribution maintainers to integrate it within their distributions
 * Work with **Chirp** maintainers to add the radio to Chirp (the memory map I created should help!)
 * Make the utility portable to other POSIX systems
-* Add editing of radio configuration (not only channels and welcome message)
+* Add editing of full radio configuration (not only channels, welcome message and key assignments)
 * Confirm that 5Tone setting for Optional Signalling is kept in the same place as DTMF
 * Add checking of RX and TX frequency sanity during import (if it falls in the 2m/70cm range)
 * Extensively test all functions (I'm not using DTMF or 5Tone, for instance)
