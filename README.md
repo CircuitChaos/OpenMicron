@@ -52,6 +52,14 @@ Applet name has to be the first argument. After it, general and applet-specific 
 
 Issue `omi -h` to see the command line summary for all applets, and `omi <applet name> -h` (for example: `omi read -h`) to see more detailed usage of any given applet.
 
+## .csv file format
+
+.csv file is a standard, comma-separated file. When importing it into LibreOffice or other spreadsheet editor, set:
+
+* Separated by: comma
+* Text delimiter: "
+* Column type for all fields: Text (select all fields and select Text in Column type box)
+
 ### Note about differential upload mode
 
 **omi write** allows you to use -r to specify an optional reference file. This file is the original file, as read by **omi read**, before any changes have been made with **omi import**, and is used to upload only changes instead of full memory, which considerably speeds up the process. If radio was not used or programmed between reading the memory with **omi read** and using it as a reference for **omi write**, everything should be fine, but if not, you can possibly end up with garbled memory and bricked radio. Proceed with caution.
