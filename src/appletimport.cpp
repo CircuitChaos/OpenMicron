@@ -151,7 +151,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 		return true;
 	}
 
-	if (line.size() != 21)
+	if (line.size() < 21)
 	{
 		logError("invalid field count");
 		return false;
@@ -667,7 +667,7 @@ bool applet::CImport::checkFreqSanity(const uint8_t /* freq */ [4])
 
 bool applet::CImport::importKeys(COmiFile &omi, const std::vector<std::string> &line)
 {
-	if (line.size() != 17)
+	if (line.size() < 17)
 	{
 		logError("invalid keys format in input file (too short)");
 		return false;
