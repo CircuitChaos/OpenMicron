@@ -52,14 +52,6 @@ Applet name has to be the first argument. After it, general and applet-specific 
 
 Issue `omi -h` to see the command line summary for all applets, and `omi <applet name> -h` (for example: `omi read -h`) to see more detailed usage of any given applet.
 
-## .csv file format
-
-CSV is a portable, comma-separated file format used to store tabular data. When importing it into LibreOffice or other spreadsheet editor, set the following CSV parameters:
-
-* Separated by: comma
-* Text delimiter: "
-* Column type for all fields: Text (select all fields and select *Text* in *Column type* box)
-
 ### Note on differential write mode
 
 **omi write** allows you to use *-r* to specify an optional reference file. This file is the original file, as read by **omi read**, before any changes have been made with **omi import**, and can be used to upload only changes instead of full memory data, which considerably speeds up the process. If radio was not used or programmed between reading memory with **omi read** and using this dump as a reference for **omi write**, then everything should be fine, but if not, you can possibly end up with garbled memory and bricked radio. Proceed with caution.
@@ -68,29 +60,84 @@ CSV is a portable, comma-separated file format used to store tabular data. When 
 
 Note that the progress bar displayed on the radio during reading and writing is not fully reliable, as it displays 100% after channel table has been read. **omi read** reads full memory, so the progress bar will stay at 100% for some time. This is normal. To observe true progress on the computer, use *-v* option.
 
-### List of assignable key functions (for reference)
+## Text and .csv file formats
 
-This should probably go in a shortened form into comments in the .csv file, but for now it's here.
+Both text and .csv files exported by **omi export** and imported by **omi import** represent the same data in tabular form, just the internal file format is different, the former being more suited for console-based environments and the latter for editing in a spreadsheet editor.
 
-Abbreviations for functions assignable to programmable keys on the radio and on the microphone:
+Both files consist of lines (rows), and each line consists of different fields (represented as columns in a .csv file). First field in the line is the commmand and subsequent fields are its parameters. No command is mandatory – only these which are present will be processed.
 
-* A/B (only radio keys; you can't set it on the microphone as there's a designated A/B key there)
-* V/M
-* SQL
-* VOL
-* POW
-* CDT
-* REV
-* SCN
-* CAL
-* TALK
-* BND
-* SFT
-* MON
-* DIR
-* TRF
-* RDW
-* NULL (isn't it a bug in the original program?)
+### Text file format
+
+This format is quite straightforward. Lines are separated by the newline character (**omi export** outputs lines with LF line endings, but **omi import** accepts both CRLF and LF endings) and fields by the single tabulation (0x09) character. There's no escaping of data within fields – it's not needed.
+
+### .csv file format
+
+CSV is a portable, comma-separated file format used to store tabular data. When importing it into LibreOffice or other spreadsheet editor, set the following CSV parameters:
+
+* Separated by: comma
+* Text delimiter: "
+* Column type for all fields: Text (select all fields and select *Text* in *Column type* box)
+
+### **comment** command
+
+**comment** is used to denote a comment. Everything in comment line is ignored.
+
+### **welcome message** command
+
+### **key** command
+
+**key** is used to assign specific functions to programmable keys. First field contains the key name, second – the function.
+
+Key names:
+
+* P1…P6 – radio keys from the default set
+* p1…p6 – radio keys from the alternate set (switched by the **FUNC** key)
+* PA…PD – microphone keys
+
+Function names:
+
+* **OFF** – disables the key (cannot be assigned to microphone keys)
+* **A/B** – toggles between the primary and secondary channel; it can only be assigned to radio keys, as microphone has a designated A/B key
+* **V/M** – toggles between the VFO and memory mode
+* **SQL** – allows to adjust squelch level
+* **VOL** – allows to adjust volume level with the knob; you can change this function to default and then VOL key will change to CH key (to select channel), but the name in Open Micron remains
+* **POW** – cycles between power levels
+* **CDT** – allows to select RX and TX decoders
+* **REV** – toggles reverse function
+* **SCN** – toggles scanning function
+* **CAL** – ?
+* **TAL** – ? (talkaround?)
+* **BND** – cycles between channel bandwidths
+* **SFT** – sets TX shift (direction and offset)
+* **MON** – enables / disables monitor (it can be set in options if monitor should be momentary or permanent)
+* **DIR** – toggles screen direction
+* **TRF** – ?
+* **RDW** – toggles dual watch
+
+### **channel** command
+
+First field contains the channel number. Subsequent fields can be empty for the channel to be removed, or can be set as follows:
+
+* Channel frequency. It can either be a single frequency (for example, *144.800* for 144.800 MHz simplex channel), or a frequency with shift direction and offset (for example, *439.35-7.6* for the SR5WA repeater)
+* RX decoder setting. Allowed values:
+    * **off** – channel receiver is not locked with CTCSS or DCS
+    * **ctcss:<value>* – channel receiver is locked with given CTCSS value (for example: *ctcss:127.3*). There's a special value, „def” (**ctcss:def**), which sets CTCSS to the value set in „Define CTCSS” field
+    * **dcs:<value>* – channel receiver is locked with given DCS value, which can be normal (for example: *dcs:123*) or inverted (for example: *dcs:i123*)
+* TX encoder setting. Values are the same as for the RX decoder
+* Squelch mode. Allowed values: **carrier**, **ctcss**, **dcs**, **optsig** (for Optional Signaling)
+* TX power. Allowed values: **off** (TX disabled), **low**, **medium**, **high*
+* Channel bandwidth. Allowed values: **narrow** (12.5 kHz), **medium** (20 kHz), **wide** (25 kHz)
+* Busy Channel Lockout. Allowed values: **off**, **rpt** (repeater), **busy**
+* PTT ID. Allowed values: **dtmf:begin**, **dtmf:end**, **dtmf:both**, **5tone:begin**, **5tone:end**, **5tone:both**
+* Optional Signaling. Allowed values:
+    * **off** – disabled
+    * **dtmf:M<value>** – use specified DTMF code (for example: dtmf:M01)
+    * **5tone:<value> ** – use specified 5tone code (for example: 5tone:0)
+* Define CTCSS. This is CTCSS used when CTCSS in encoder or decoder is set to **def**
+* Flags. One of the following, colon-separated:
+    * **scan** – set to enable scanning
+    * **talk** – set to enable talkaround
+    * **rev** – set to enable reverse frequency mode
 
 ## .omi file format
 
