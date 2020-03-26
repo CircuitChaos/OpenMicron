@@ -70,10 +70,8 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		"BCL",
 		"PTT ID",
 		"Opt Sig",
-		"Scanning",
-		"Talkaround",
-		"Reverse",
 		"Def. CTCSS",
+		"Flags",
 		NULL);
 
 	tf.add(-1, strings::COMMENT,
@@ -89,9 +87,8 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		util::format("%s, %s/%s%c%s/%s/%s", strings::PTTID_OFF, strings::PTTID_DTMF, strings::PTTID_5TONE,
 			strings::SEPARATOR, strings::PTTID_BEGIN, strings::PTTID_END, strings::PTTID_BOTH).c_str(),
 		util::format("%s, %sn, %sn", strings::OPTSIG_OFF, strings::OPTSIG_DTMF, strings::OPTSIG_5TONE).c_str(),
-		util::format("%s, %s", strings::NO, strings::YES).c_str(),
-		util::format("%s, %s", strings::NO, strings::YES).c_str(),
-		util::format("%s, %s", strings::NO, strings::YES).c_str(),
+		"",
+		util::format("%s%c%s%c%s", strings::FLAG_SCAN, strings::SEPARATOR, strings::FLAG_TALKAROUND, strings::SEPARATOR, strings::FLAG_REVERSE).c_str(),
 		"",
 		NULL);
 }
@@ -136,10 +133,8 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		v.push_back(getBcl(chanNo, chan->bcl));
 		v.push_back(getPttId(chanNo, chan->pttid));
 		v.push_back(getOptSig(chanNo, chan->optsig, chan->flags3.dtmf));
-		v.push_back(getFlag(&data[SCANNING_OFFSET], i) ? strings::YES : strings::NO);
-		v.push_back(chan->flags1.talkaround ? strings::YES : strings::NO);
-		v.push_back(chan->flags2.reverse ? strings::YES : strings::NO);
 		v.push_back(getDefCts(chanNo, chan->defcts));
+		v.push_back(getFlags(getFlag(&data[SCANNING_OFFSET], i), chan->flags1.talkaround, chan->flags2.reverse));
 		tf.add(v);
 	}
 }
@@ -482,4 +477,20 @@ std::string applet::CExport::getDefCts(unsigned /* chanNo */, const uint8_t *def
 {
 	const uint16_t value(defCts[0] | ((uint16_t) defCts[1] << 8));
 	return util::format("%u.%u", value / 10, value % 10);
+}
+
+std::string applet::CExport::getFlags(bool scan, bool talk, bool rev)
+{
+	std::string flags;
+
+	if (scan)
+		flags += (flags.empty() ? std::string("") : std::string(1, strings::SEPARATOR)) + strings::FLAG_SCAN;
+
+	if (talk)
+		flags += (flags.empty() ? std::string("") : std::string(1, strings::SEPARATOR)) + strings::FLAG_TALKAROUND;
+
+	if (rev)
+		flags += (flags.empty() ? std::string("") : std::string(1, strings::SEPARATOR)) + strings::FLAG_REVERSE;
+
+	return flags;
 }

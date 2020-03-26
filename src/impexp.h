@@ -18,8 +18,9 @@ namespace impexp
 		static const char CHANNEL[]		= "channel";
 		static const char KEY[]			= "key";
 
-		static const char NO[]			= "no";
-		static const char YES[]			= "yes";
+		static const char FLAG_SCAN[]		= "scan";
+		static const char FLAG_TALKAROUND[]	= "talk";
+		static const char FLAG_REVERSE[]	= "rev";
 
 		static const char ENCDEC_OFF[]		= "off";
 		static const char ENCDEC_CTCSS[]	= "CTCSS";

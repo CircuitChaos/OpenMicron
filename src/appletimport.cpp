@@ -151,7 +151,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 		return true;
 	}
 
-	if (line.size() < 16)
+	if (line.size() < 14)
 	{
 		logError("invalid field count");
 		return false;
@@ -172,10 +172,8 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	if (!importBcl(line[idx++])) return false;
 	if (!importPttId(line[idx++])) return false;
 	if (!importOptSig(line[idx++])) return false;
-	if (!importScanning(line[idx++], scanning)) return false;
-	if (!importTalkaround(line[idx++])) return false;
-	if (!importReverse(line[idx++])) return false;
 	if (!importDefCts(line[idx++])) return false;
+	if (!importFlags(line[idx++], scanning)) return false;
 
 	if (!scanning)
 		clrFlag(&omi.getData()[SCANNING_OFFSET], chanNo - 1);
@@ -501,48 +499,31 @@ bool applet::CImport::importOptSig(const std::string &field)
 	return true;
 }
 
-bool applet::CImport::importScanning(const std::string &field, bool &scanning)
+bool applet::CImport::importFlags(const std::string &field, bool &scanning)
 {
-	if (field == strings::YES)
-		scanning = true;
-	else if (field == strings::NO)
-		scanning = false;
-	else
+	scanning = false;
+	bool talkaround(false);
+	bool reverse(false);
+
+	std::vector<std::string> flags(util::tokenize(field, strings::SEPARATOR));
+
+	for (auto &s: flags)
 	{
-		logError("invalid Scanning setting (%s)", field.c_str());
-		return false;
+		if (s == strings::FLAG_SCAN)
+			scanning = true;
+		else if (s == strings::FLAG_REVERSE)
+			reverse = true;
+		else if (s == strings::FLAG_TALKAROUND)
+			talkaround = true;
+		else
+		{
+			logError("invalid flag (%s)", s.c_str());
+			return false;
+		}
 	}
 
-	return true;
-}
-
-bool applet::CImport::importTalkaround(const std::string &field)
-{
-	if (field == strings::YES)
-		m_chan->flags1.talkaround = true;
-	else if (field == strings::NO)
-		m_chan->flags1.talkaround = false;
-	else
-	{
-		logError("invalid Talkaround setting (%s)", field.c_str());
-		return false;
-	}
-
-	return true;
-}
-
-bool applet::CImport::importReverse(const std::string &field)
-{
-	if (field == strings::YES)
-		m_chan->flags2.reverse = true;
-	else if (field == strings::NO)
-		m_chan->flags2.reverse = false;
-	else
-	{
-		logError("invalid Reverse setting (%s)", field.c_str());
-		return false;
-	}
-
+	m_chan->flags1.talkaround = talkaround;
+	m_chan->flags2.reverse = reverse;
 	return true;
 }
 

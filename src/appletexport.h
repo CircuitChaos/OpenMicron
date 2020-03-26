@@ -39,5 +39,6 @@ namespace applet
 		static std::string getSingleFreq(unsigned chanNo, const uint8_t *freq, bool condensed);
 		static std::string getCts(unsigned chanNo, uint8_t cts);
 		static std::string getDcs(unsigned chanNo, uint8_t dcs, impexp::SChannel::SDcsFlags dcsFlags);
+		static std::string getFlags(bool scan, bool talk, bool rev);
 	};
 }

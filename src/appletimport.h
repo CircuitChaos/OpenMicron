@@ -59,9 +59,7 @@ namespace applet
 		bool importBcl(const std::string &field);
 		bool importPttId(const std::string &field);
 		bool importOptSig(const std::string &field);
-		bool importScanning(const std::string &field, bool &scanning);
-		bool importTalkaround(const std::string &field);
-		bool importReverse(const std::string &field);
+		bool importFlags(const std::string &field, bool &scanning);
 		bool importBandwidth(const std::string &field);
 		bool importDefCts(const std::string &field);
 
