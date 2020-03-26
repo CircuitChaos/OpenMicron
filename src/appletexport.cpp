@@ -147,13 +147,13 @@ void applet::CExport::outputKeys(CTextFile &tf, const std::vector<uint8_t> &data
 		const std::string keyName(FUNC_KEY_NAMES[i]);
 		std::string keyValue;
 
-		if (key > sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS))
+		if (key < 1 || key > sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS))
 		{
 			loge("Warning: could not decode func key code 0x%02x, setting literal", key);
 			keyValue = util::format("0x%02x", key);
 		}
 		else
-			keyValue = KEY_FUNCTIONS[key];
+			keyValue = KEY_FUNCTIONS[key - 1];
 
 		tf.add(-1, strings::KEY, keyName.c_str(), keyValue.c_str(), NULL);
 	}
@@ -164,7 +164,7 @@ void applet::CExport::outputKeys(CTextFile &tf, const std::vector<uint8_t> &data
 		const std::string keyName(MIC_KEY_NAMES[i]);
 		std::string keyValue;
 
-		if (key > sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS))
+		if (key < 1 || key > sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS))
 		{
 			loge("Warning: could not decode mic key code 0x%02x, setting literal", key);
 			keyValue = util::format("0x%02x", key);
@@ -172,10 +172,10 @@ void applet::CExport::outputKeys(CTextFile &tf, const std::vector<uint8_t> &data
 		else if (key == 1)
 		{
 			loge("Warning: mic key code set to A/B, setting to OFF");
-			keyValue = KEY_FUNCTIONS[0];
+			keyValue = KEY_FUNCTIONS[sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS) - 1];
 		}
 		else
-			keyValue = KEY_FUNCTIONS[key];
+			keyValue = KEY_FUNCTIONS[key - 1];
 
 		tf.add(-1, strings::KEY, keyName.c_str(), keyValue.c_str(), NULL);
 	}

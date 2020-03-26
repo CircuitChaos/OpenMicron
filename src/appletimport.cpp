@@ -693,13 +693,13 @@ bool applet::CImport::importKey(COmiFile &omi, unsigned idx, const std::string &
 		if (value != KEY_FUNCTIONS[i])
 			continue;
 
-		if (isMic && i == 1)
+		if (isMic && i == 0)
 		{
 			logError("cannot import A/B key for microphone");
 			return false;
 		}
 
-		*data = i;
+		*data = i + 1;
 		return true;
 	}
 

@@ -137,11 +137,11 @@ namespace impexp
 	// remember that it starts from 1
 	static const char * const KEY_FUNCTIONS[] =
 	{
-		"OFF",
 		"A/B", "V/M", "SQL", "VOL",
 		"POW", "CDT", "REV", "SCN",
 		"CAL", "TALK", "BND", "SFT",
 		"MON", "DIR", "TRF", "RDW",
+		"OFF",
 	};
 
 	struct SChannel
