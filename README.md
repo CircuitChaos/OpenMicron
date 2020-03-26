@@ -121,8 +121,8 @@ First field contains the channel number. Subsequent fields can be empty for the 
 * Channel frequency. It can either be a single frequency (for example, *144.800* for 144.800 MHz simplex channel), or a frequency with shift direction and offset (for example, *439.35-7.6* for the SR5WA repeater)
 * RX decoder setting. Allowed values:
     * **off** – channel receiver is not locked with CTCSS or DCS
-    * **ctcss:<value>* – channel receiver is locked with given CTCSS value (for example: *ctcss:127.3*). There's a special value, „def” (**ctcss:def**), which sets CTCSS to the value set in „Define CTCSS” field
-    * **dcs:<value>* – channel receiver is locked with given DCS value, which can be normal (for example: *dcs:123*) or inverted (for example: *dcs:i123*)
+    * **ctcss:<value>** – channel receiver is locked with given CTCSS value (for example: *ctcss:127.3*). There's a special value, „def” (**ctcss:def**), which sets CTCSS to the value set in „Define CTCSS” field
+    * **dcs:<value>** – channel receiver is locked with given DCS value, which can be normal (for example: *dcs:123*) or inverted (for example: *dcs:i123*)
 * TX encoder setting. Values are the same as for the RX decoder
 * Squelch mode. Allowed values: **carrier**, **ctcss**, **dcs**, **optsig** (for Optional Signaling)
 * TX power. Allowed values: **off** (TX disabled), **low**, **medium**, **high*
