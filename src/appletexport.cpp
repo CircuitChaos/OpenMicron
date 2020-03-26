@@ -171,8 +171,13 @@ void applet::CExport::outputKeys(CTextFile &tf, const std::vector<uint8_t> &data
 		}
 		else if (key == 1)
 		{
-			loge("Warning: mic key code set to A/B, setting to OFF");
-			keyValue = KEY_FUNCTIONS[sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS) - 1];
+			loge("Warning: mic key code set to A/B, setting to V/M");
+			keyValue = KEY_FUNCTIONS[1];
+		}
+		else if (key == sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS))
+		{
+			loge("Warning: mic key code set to OFF, setting to V/M");
+			keyValue = KEY_FUNCTIONS[1];
 		}
 		else
 			keyValue = KEY_FUNCTIONS[key - 1];
