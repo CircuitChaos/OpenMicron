@@ -68,9 +68,9 @@ bool applet::CImport::run(int argc, char * const argv[])
 			if (!importChannel(omi, line))
 				return false;
 		}
-		else if (line[0] == strings::KEYS)
+		else if (line[0] == strings::KEY)
 		{
-			if (!importKeys(omi, line))
+			if (!importKey(omi, line))
 				return false;
 		}
 		else
@@ -660,64 +660,53 @@ bool applet::CImport::convertFreq(uint8_t out[4], const std::string &in)
 	return true;
 }
 
-bool applet::CImport::importKeys(COmiFile &omi, const std::vector<std::string> &line)
+bool applet::CImport::importKey(COmiFile &omi, const std::vector<std::string> &line)
 {
-	if (line.size() < 17)
+	if (line.size() < 3)
 	{
-		logError("invalid keys format in input file (too short)");
+		logError("invalid key format in input file (too short)");
 		return false;
 	}
 
-	for (unsigned i(0); i < 12; ++i)
-		if (!importFuncKey(&omi.getData()[FUNC_KEYS_OFFSET + i], line[i + 1]))
-			return false;
+	for (unsigned i(0); i < sizeof(FUNC_KEY_NAMES) / sizeof(*FUNC_KEY_NAMES); ++i)
+		if (line[1] == FUNC_KEY_NAMES[i])
+			return importKey(omi, i, line[2], false);
 
-	for (unsigned i(0); i < 4; ++i)
-		if (!importMicKey(&omi.getData()[MIC_KEYS_OFFSET + i], line[i + 1 + 12]))
-			return false;
+	for (unsigned i(0); i < sizeof(MIC_KEY_NAMES) / sizeof(*MIC_KEY_NAMES); ++i)
+		if (line[1] == MIC_KEY_NAMES[i])
+			return importKey(omi, i, line[2], true);
 
-	return true;
-}
-
-// xxx: these two methods are similar, need to make one generic instead
-
-bool applet::CImport::importFuncKey(uint8_t *out, const std::string &in)
-{
-	if (in.size() == 4 && in.substr(0, 2) == "0x")
-	{
-		logn("Warning: importing function key as hex literal (%s)", in.c_str());
-		*out = strtol(in.substr(2).c_str(), NULL, 16);
-		return true;
-	}
-
-	for (unsigned i(0); i < sizeof(FUNC_KEYS) / sizeof(*FUNC_KEYS); ++i)
-		if (in == FUNC_KEYS[i])
-		{
-			*out = i + 1;
-			return true;
-		}
-
-	logError("invalid func key %s", in.c_str());
+	logError("invalid key name (%s)", line[1].c_str());
 	return false;
 }
 
-bool applet::CImport::importMicKey(uint8_t *out, const std::string &in)
+bool applet::CImport::importKey(COmiFile &omi, unsigned idx, const std::string &value, bool isMic)
 {
-	if (in.size() == 4 && in.substr(0, 2) == "0x")
+	xassert(idx < (isMic ? 4 : 12), "Index out of range (%u)", idx);
+	uint8_t *data(&omi.getData()[(isMic ? MIC_KEYS_OFFSET : FUNC_KEYS_OFFSET) + idx]);
+
+	if (value.size() == 4 && value.substr(0, 2) == "0x")
 	{
-		logn("Warning: importing mic key as hex literal (%s)", in.c_str());
-		*out = strtol(in.substr(2).c_str(), NULL, 16);
+		logn("Warning: importing key as hex literal (%s)", value.c_str());
+		*data = strtol(value.substr(2).c_str(), NULL, 16);
 		return true;
 	}
 
-	for (unsigned i(0); i < sizeof(MIC_KEYS) / sizeof(*MIC_KEYS); ++i)
-		if (in == MIC_KEYS[i])
+	for (unsigned i(0); i < sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS); ++i)
+	{
+		if (value != KEY_FUNCTIONS[i])
+			continue;
+
+		if (isMic && i == 1)
 		{
-			*out = i + 2;
-			return true;
+			logError("cannot import A/B key for microphone");
+			return false;
 		}
 
-	logError("invalid mic key %s", in.c_str());
-	return false;
+		*data = i;
+		return true;
+	}
 
+	logError("invalid key value (%s)", value.c_str());
+	return false;
 }

@@ -107,22 +107,8 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 void applet::CExport::outputKeysComment(CTextFile &tf)
 {
 	tf.add(-1, strings::COMMENT,
-		"P1",
-		"P2",
-		"P3",
-		"P4",
-		"P5",
-		"P6",
-		"Alt P1",
-		"Alt P2",
-		"Alt P3",
-		"Alt P4",
-		"Alt P5",
-		"Alt P6",
-		"Mic PA",
-		"Mic PB",
-		"Mic PC",
-		"Mic PD",
+		"Key name",
+		"Key function",
 		NULL);
 }
 
@@ -172,17 +158,44 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 
 void applet::CExport::outputKeys(CTextFile &tf, const std::vector<uint8_t> &data)
 {
-	std::vector<std::string> v;
-
-	v.push_back(strings::KEYS);
-
 	for (unsigned i(0); i < 12; ++i)
-		v.push_back(getFuncKey(data[FUNC_KEYS_OFFSET + i]));
+	{
+		const uint8_t key(data[FUNC_KEYS_OFFSET + i]);
+		const std::string keyName(FUNC_KEY_NAMES[i]);
+		std::string keyValue;
+
+		if (key > sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS))
+		{
+			loge("Warning: could not decode func key code 0x%02x, setting literal", key);
+			keyValue = util::format("0x%02x", key);
+		}
+		else
+			keyValue = KEY_FUNCTIONS[key];
+
+		tf.add(-1, strings::KEY, keyName.c_str(), keyValue.c_str(), NULL);
+	}
 
 	for (unsigned i(0); i < 4; ++i)
-		v.push_back(getMicKey(data[MIC_KEYS_OFFSET + i]));
+	{
+		const uint8_t key(data[MIC_KEYS_OFFSET + i]);
+		const std::string keyName(MIC_KEY_NAMES[i]);
+		std::string keyValue;
 
-	tf.add(v);
+		if (key > sizeof(KEY_FUNCTIONS) / sizeof(*KEY_FUNCTIONS))
+		{
+			loge("Warning: could not decode mic key code 0x%02x, setting literal", key);
+			keyValue = util::format("0x%02x", key);
+		}
+		else if (key == 1)
+		{
+			loge("Warning: mic key code set to A/B, setting to OFF");
+			keyValue = KEY_FUNCTIONS[0];
+		}
+		else
+			keyValue = KEY_FUNCTIONS[key];
+
+		tf.add(-1, strings::KEY, keyName.c_str(), keyValue.c_str(), NULL);
+	}
 }
 
 void applet::CExport::debugDumpChannel(const SChannel *chan)
@@ -481,26 +494,4 @@ std::string applet::CExport::getDefCts(unsigned /* chanNo */, const uint8_t *def
 {
 	const uint16_t value(defCts[0] | ((uint16_t) defCts[1] << 8));
 	return util::format("%u.%u", value / 10, value % 10);
-}
-
-std::string applet::CExport::getFuncKey(unsigned key)
-{
-	if (key < 0x01 || key > 0x11)
-	{
-		loge("Warning: could not decode func key code 0x%02x, setting literal", key);
-		return util::format("0x%02x", key);
-	}
-
-	return FUNC_KEYS[key - 1];
-}
-
-std::string applet::CExport::getMicKey(unsigned key)
-{
-	if (key < 0x02 || key > 0x10)
-	{
-		loge("Warning: could not decode mic key code 0x%02x, setting literal", key);
-		return util::format("0x%02x", key);
-	}
-
-	return MIC_KEYS[key - 1];
 }

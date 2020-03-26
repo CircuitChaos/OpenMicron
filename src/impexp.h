@@ -16,7 +16,7 @@ namespace impexp
 		static const char COMMENT[]		= "comment";
 		static const char WELCOME[]		= "welcome message";
 		static const char CHANNEL[]		= "channel";
-		static const char KEYS[]		= "keys";
+		static const char KEY[]			= "key";
 
 		static const char NO[]			= "no";
 		static const char YES[]			= "yes";
@@ -122,21 +122,25 @@ namespace impexp
 		"def",		// 0x33
 	};
 
-	static const char * const FUNC_KEYS[] =
+	static const char * const FUNC_KEY_NAMES[] =
 	{
+		"P1", "P2", "P3", "P4", "P5", "P6",
+		"p1", "p2", "p3", "p4", "p5", "p6",
+	};
+
+	static const char * const MIC_KEY_NAMES[] =
+	{
+		"PA", "PB", "PC", "PD",
+	};
+
+	// remember that it starts from 1
+	static const char * const KEY_FUNCTIONS[] =
+	{
+		"OFF",
 		"A/B", "V/M", "SQL", "VOL",
 		"POW", "CDT", "REV", "SCN",
 		"CAL", "TALK", "BND", "SFT",
 		"MON", "DIR", "TRF", "RDW",
-		"NULL",
-	};
-
-	static const char * const MIC_KEYS[] =
-	{
-		"V/M", "SQL", "VOL", "POW",
-		"CDT", "REV", "SCN", "CAL",
-		"TALK", "BND", "SFT", "MON",
-		"DIR", "TRF", "RDW",
 	};
 
 	struct SChannel
