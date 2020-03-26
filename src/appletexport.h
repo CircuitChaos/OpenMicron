@@ -27,8 +27,7 @@ namespace applet
 		static void outputKeys(CTextFile &tf, const std::vector<uint8_t> &data);
 		static void debugDumpChannel(const impexp::SChannel *chan);
 		static std::string getModel(const uint8_t *p);
-		static std::string getFreq(unsigned chanNo, const uint8_t *freq, bool condensed);
-		static std::string getShift(unsigned chanNo, impexp::SChannel::SFlags1::EShiftDir dir, const uint8_t *freq);
+		static std::string getCombinedFreq(unsigned chanNo, const uint8_t *rxfreq, const uint8_t *txshift, impexp::SChannel::SFlags1::EShiftDir dir);
 		static std::string getDecoder(unsigned chanNo, bool dcs, bool cts);
 		static std::string getCts(unsigned chanNo, uint8_t cts);
 		static std::string getDcs(unsigned chanNo, uint8_t dcs, impexp::SChannel::SDcsFlags flags);
@@ -41,5 +40,6 @@ namespace applet
 		static std::string getDefCts(unsigned chanNo, const uint8_t *defCts);
 		static std::string getFuncKey(unsigned key);
 		static std::string getMicKey(unsigned key);
+		static std::string getSingleFreq(unsigned chanNo, const uint8_t *freq, bool condensed);
 	};
 }

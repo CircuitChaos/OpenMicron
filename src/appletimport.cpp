@@ -151,7 +151,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 		return true;
 	}
 
-	if (line.size() < 21)
+	if (line.size() < 20)
 	{
 		logError("invalid field count");
 		return false;
@@ -163,8 +163,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	bool scanning;
 	unsigned idx(2);
 	if (!importName(line[idx++])) return false;
-	if (!importRxFreq(line[idx++])) return false;
-	if (!importTxShift(line[idx++])) return false;
+	if (!importCombinedFreq(line[idx++])) return false;
 	if (!importEncDec(line[idx++], false)) return false;
 	if (!importCts(line[idx++], false)) return false;
 	if (!importDcs(line[idx++], false)) return false;
@@ -201,52 +200,54 @@ bool applet::CImport::importName(const std::string &field)
 	return true;
 }
 
-bool applet::CImport::importRxFreq(const std::string &field)
+bool applet::CImport::importCombinedFreq(const std::string &field)
 {
 	static_assert(sizeof(m_chan->rxfreq) == 4, "Wrong RX frequency array size");
-
-	if (!convertFreq(m_chan->rxfreq, field))
-		return false;
-
-	if (!checkFreqSanity(m_chan->rxfreq))
-		return false;
-
-	return true;
-}
-
-bool applet::CImport::importTxShift(const std::string &field)
-{
-	if (field.empty())
-	{
-		logError("invalid TX shift setting (%s)", field.c_str());
-		return false;
-	}
-
-	std::string absFreq;
-	bool isNeg(false);
-	if (field[0] == '-')
-	{
-		absFreq = field.substr(1);
-		isNeg = true;
-	}
-	else if (field[0] == '+')
-		absFreq = field.substr(1);
-	else
-		absFreq = field;
-
 	static_assert(sizeof(m_chan->txshift) == 4, "Wrong TX shift array size");
 
-	if (!convertFreq(m_chan->txshift, absFreq))
+	std::string freq, shift;
+	char dir(0);
+
+	const size_t npos(field.find('-')), ppos(field.find('+'));
+	if (npos == std::string::npos && ppos == std::string::npos)
+		freq = field;
+	else if (npos == std::string::npos && ppos != std::string::npos)
+	{
+		freq = field.substr(0, ppos);
+		shift = field.substr(ppos + 1);
+		dir = '+';
+	}
+	else if (npos != std::string::npos && ppos == std::string::npos)
+	{
+		freq = field.substr(0, npos);
+		shift = field.substr(npos + 1);
+		dir = '-';
+	}
+	else
+	{
+		logError("both + and - found in frequency field (%s)", field.c_str());
+		return false;
+	}
+
+	if (!convertFreq(m_chan->rxfreq, freq))
+		return false;
+
+	if (dir == 0)
+	{
+		memset(m_chan->txshift, 0, 4);
+		m_chan->flags1.shiftdir = SChannel::SFlags1::SHIFT_OFF;
+		return true;
+	}
+
+	xassert(dir == '+' || dir == '-', "Invalid direction (%c)", dir);
+
+	if (!convertFreq(m_chan->txshift, shift))
 		return false;
 
 	if (!memcmp(m_chan->txshift, "\0\0\0\0", 4))
 		m_chan->flags1.shiftdir = SChannel::SFlags1::SHIFT_OFF;
-	else if (isNeg)
-		m_chan->flags1.shiftdir = SChannel::SFlags1::SHIFT_DN;
 	else
-		m_chan->flags1.shiftdir = SChannel::SFlags1::SHIFT_UP;
-
-	// xxx: calculate shifted freq and call checkFreqSanity() on it
+		m_chan->flags1.shiftdir = (dir == '+') ? SChannel::SFlags1::SHIFT_UP : SChannel::SFlags1::SHIFT_DN;
 	return true;
 }
 
@@ -656,12 +657,6 @@ bool applet::CImport::convertFreq(uint8_t out[4], const std::string &in)
 	for (size_t idx(0); idx < 4; ++idx)
 		out[idx] = ((combined[idx * 2] - '0') << 4) | (combined[idx * 2 + 1] - '0');
 
-	return true;
-}
-
-bool applet::CImport::checkFreqSanity(const uint8_t /* freq */ [4])
-{
-	// xxx actually implement it
 	return true;
 }
 

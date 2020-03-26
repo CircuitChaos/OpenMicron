@@ -61,8 +61,7 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 	tf.add(-1, strings::COMMENT,
 		"Number",
 		"Name",
-		"RX Freq",
-		"TX Shift",
+		"Frequency",
 		"RX Decoder",
 		"RX CTCSS",
 		"RX DCS",
@@ -84,7 +83,6 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 	tf.add(-1, strings::COMMENT,
 		"",
 		"5 chr max",
-		"",
 		"",
 		util::format("%s, %s, %s", strings::ENCDEC_NONE, strings::ENCDEC_CTCSS, strings::ENCDEC_DCS).c_str(),
 		util::format("can be '%s'", CTSTBL[sizeof(CTSTBL) / sizeof(CTSTBL[0]) - 1]).c_str(),
@@ -151,8 +149,7 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		v.push_back(strings::CHANNEL);
 		v.push_back(util::format("%u", chanNo));
 		v.push_back(util::toPrintable(std::string((const char *) chan->chname, 5)).c_str());
-		v.push_back(getFreq(chanNo, chan->rxfreq, false));
-		v.push_back(getShift(chanNo, chan->flags1.shiftdir, chan->txshift));
+		v.push_back(getCombinedFreq(chanNo, chan->rxfreq, chan->txshift, chan->flags1.shiftdir));
 		v.push_back(getDecoder(chanNo, chan->flags3.rxdcs, chan->flags3.rxcts));
 		v.push_back(getCts(chanNo, chan->rxcts));
 		v.push_back(getDcs(chanNo, chan->rxdcs, chan->rxdcsfl));
@@ -214,21 +211,26 @@ void applet::CExport::debugDumpChannel(const SChannel *chan)
 	logdump("Def CTS", chan->defcts, sizeof(chan->defcts));
 }
 
-std::string applet::CExport::getShift(unsigned chanNo, SChannel::SFlags1::EShiftDir dir, const uint8_t *freq)
+std::string applet::CExport::getCombinedFreq(unsigned chanNo, const uint8_t *rxfreq, const uint8_t *txshift, SChannel::SFlags1::EShiftDir dir)
 {
-	switch (dir)
+	std::string freq(getSingleFreq(chanNo, rxfreq, false));
+	if (freq.empty())
+		return "";
+
+	if (dir == SChannel::SFlags1::SHIFT_UP || dir == SChannel::SFlags1::SHIFT_DN)
 	{
-		case SChannel::SFlags1::SHIFT_DN:
-			return std::string("-") + getFreq(chanNo, freq, true);
+		const std::string shift(getSingleFreq(chanNo, txshift, true));
+		if (shift.empty())
+			return "";
 
-		case SChannel::SFlags1::SHIFT_UP:
-			return getFreq(chanNo, freq, true);
-
-		default:
-			break;
+		if (shift != "0")
+		{
+			freq.push_back((dir == SChannel::SFlags1::SHIFT_UP) ? '+' : '-');
+			freq += shift;
+		}
 	}
 
-	return "0";
+	return freq;
 }
 
 std::string applet::CExport::getModel(const uint8_t *p)
@@ -261,7 +263,7 @@ std::string applet::CExport::getDecoder(unsigned chanNo, bool dcs, bool cts)
 	return strings::ENCDEC_NONE;
 }
 
-std::string applet::CExport::getFreq(unsigned chanNo, const uint8_t *freq, bool condensed)
+std::string applet::CExport::getSingleFreq(unsigned chanNo, const uint8_t *freq, bool condensed)
 {
 	// freq is in BCD format
 	// 43 93 50 00 = 439.35000

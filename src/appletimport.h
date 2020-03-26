@@ -52,8 +52,7 @@ namespace applet
 		bool importKeys(COmiFile &omi, const std::vector<std::string> &line);
 
 		bool importName(const std::string &field);
-		bool importRxFreq(const std::string &field);
-		bool importTxShift(const std::string &field);
+		bool importCombinedFreq(const std::string &field);
 		bool importEncDec(const std::string &field, bool isEncoder);
 		bool importCts(const std::string &field, bool isEncoder);
 		bool importDcs(const std::string &field, bool isEncoder);
@@ -71,7 +70,6 @@ namespace applet
 		bool convertName(std::string &out, const std::string &in, unsigned size);
 		bool getCtsIdx(const std::string &number, size_t &idx, bool allowDef);
 		bool convertFreq(uint8_t out[4], const std::string &in);
-		bool checkFreqSanity(const uint8_t freq[4]);
 
 		bool importFuncKey(uint8_t *out, const std::string &in);
 		bool importMicKey(uint8_t *out, const std::string &in);
