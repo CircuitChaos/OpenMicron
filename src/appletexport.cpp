@@ -66,13 +66,13 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		"TX Encoder",
 		"Squelch",
 		"TX Power",
+		"Bandwidth",
 		"BCL",
 		"PTT ID",
 		"Opt Sig",
 		"Scanning",
 		"Talkaround",
 		"Reverse",
-		"Bandwidth",
 		"Def. CTCSS",
 		NULL);
 
@@ -84,6 +84,7 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		util::format("%s, %s%c<value>, %s%c<value>", strings::ENCDEC_OFF, strings::ENCDEC_CTCSS, strings::SEPARATOR, strings::ENCDEC_DCS, strings::SEPARATOR).c_str(),
 		util::format("%s, %s, %s", strings::SQL_CARRIER, strings::SQL_CTSDCS, strings::SQL_OPTSIG).c_str(),
 		util::format("%s, %s, %s, %s", strings::TXP_OFF, strings::TXP_LOW, strings::TXP_MEDIUM, strings::TXP_HIGH).c_str(),
+		util::format("%s, %s, %s", strings::BW_125, strings::BW_20, strings::BW_25).c_str(),
 		util::format("%s, %s, %s", strings::BCL_OFF, strings::BCL_RPT, strings::BCL_BUSY).c_str(),
 		util::format("%s, %s/%s%c%s/%s/%s", strings::PTTID_OFF, strings::PTTID_DTMF, strings::PTTID_5TONE,
 			strings::SEPARATOR, strings::PTTID_BEGIN, strings::PTTID_END, strings::PTTID_BOTH).c_str(),
@@ -91,7 +92,6 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
-		util::format("%s, %s, %s", strings::BW_125, strings::BW_20, strings::BW_25).c_str(),
 		"",
 		NULL);
 }
@@ -132,13 +132,13 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		v.push_back(getEncDec(chanNo, chan->flags3.txdcs, chan->flags3.txcts, chan->txcts, chan->txdcs, chan->txdcsfl));
 		v.push_back(getSquelchMode(chanNo, chan->sql));
 		v.push_back(getTxPower(chanNo, chan->flags2.txoff, chan->flags1.txpwr));
+		v.push_back(getBandwidth(chanNo, chan->flags2.bandwidth));
 		v.push_back(getBcl(chanNo, chan->bcl));
 		v.push_back(getPttId(chanNo, chan->pttid));
 		v.push_back(getOptSig(chanNo, chan->optsig, chan->flags3.dtmf));
 		v.push_back(getFlag(&data[SCANNING_OFFSET], i) ? strings::YES : strings::NO);
 		v.push_back(chan->flags1.talkaround ? strings::YES : strings::NO);
 		v.push_back(chan->flags2.reverse ? strings::YES : strings::NO);
-		v.push_back(getBandwidth(chanNo, chan->flags2.bandwidth));
 		v.push_back(getDefCts(chanNo, chan->defcts));
 		tf.add(v);
 	}

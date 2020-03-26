@@ -49,9 +49,9 @@ namespace impexp
 		static const char OPTSIG_DTMF[]		= "dtmf:M";
 		static const char OPTSIG_5TONE[]	= "5tone:";
 
-		static const char BW_125[]		= "12.5";
-		static const char BW_20[]		= "20.0";
-		static const char BW_25[]		= "25.0";
+		static const char BW_125[]		= "narrow";
+		static const char BW_20[]		= "medium";
+		static const char BW_25[]		= "wide";
 
 		static const char SEPARATOR		= ':';
 		static const char DCS_INVERT_FLAG	= 'i';

@@ -168,13 +168,13 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	if (!importEncDec(line[idx++], true)) return false;
 	if (!importSquelchMode(line[idx++])) return false;
 	if (!importTxPower(line[idx++])) return false;
+	if (!importBandwidth(line[idx++])) return false;
 	if (!importBcl(line[idx++])) return false;
 	if (!importPttId(line[idx++])) return false;
 	if (!importOptSig(line[idx++])) return false;
 	if (!importScanning(line[idx++], scanning)) return false;
 	if (!importTalkaround(line[idx++])) return false;
 	if (!importReverse(line[idx++])) return false;
-	if (!importBandwidth(line[idx++])) return false;
 	if (!importDefCts(line[idx++])) return false;
 
 	if (!scanning)
