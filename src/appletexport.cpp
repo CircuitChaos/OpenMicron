@@ -63,11 +63,7 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		"Name",
 		"Frequency",
 		"RX Decoder",
-		"RX CTCSS",
-		"RX DCS",
 		"TX Encoder",
-		"TX CTCSS",
-		"TX DCS",
 		"Squelch",
 		"TX Power",
 		"BCL",
@@ -84,17 +80,13 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		"",
 		"5 chr max",
 		"",
-		util::format("%s, %s, %s", strings::ENCDEC_NONE, strings::ENCDEC_CTCSS, strings::ENCDEC_DCS).c_str(),
-		util::format("can be '%s'", CTSTBL[sizeof(CTSTBL) / sizeof(CTSTBL[0]) - 1]).c_str(),
-		util::format("start with '%c' to invert", strings::DCS_INVERT_FLAG).c_str(),
-		util::format("%s, %s, %s", strings::ENCDEC_NONE, strings::ENCDEC_CTCSS, strings::ENCDEC_DCS).c_str(),
-		util::format("can be '%s'", CTSTBL[sizeof(CTSTBL) / sizeof(CTSTBL[0]) - 1]).c_str(),
-		util::format("start with '%c' to invert", strings::DCS_INVERT_FLAG).c_str(),
+		util::format("%s, %s%c<value>, %s%c<value>", strings::ENCDEC_OFF, strings::ENCDEC_CTCSS, strings::SEPARATOR, strings::ENCDEC_DCS, strings::SEPARATOR).c_str(),
+		util::format("%s, %s%c<value>, %s%c<value>", strings::ENCDEC_OFF, strings::ENCDEC_CTCSS, strings::SEPARATOR, strings::ENCDEC_DCS, strings::SEPARATOR).c_str(),
 		util::format("%s, %s, %s", strings::SQL_CARRIER, strings::SQL_CTSDCS, strings::SQL_OPTSIG).c_str(),
 		util::format("%s, %s, %s, %s", strings::TXP_OFF, strings::TXP_LOW, strings::TXP_MEDIUM, strings::TXP_HIGH).c_str(),
 		util::format("%s, %s, %s", strings::BCL_OFF, strings::BCL_RPT, strings::BCL_BUSY).c_str(),
 		util::format("%s, %s/%s%c%s/%s/%s", strings::PTTID_OFF, strings::PTTID_DTMF, strings::PTTID_5TONE,
-			strings::PTTID_SEPARATOR, strings::PTTID_BEGIN, strings::PTTID_END, strings::PTTID_BOTH).c_str(),
+			strings::SEPARATOR, strings::PTTID_BEGIN, strings::PTTID_END, strings::PTTID_BOTH).c_str(),
 		util::format("%s, %sn, %sn", strings::OPTSIG_OFF, strings::OPTSIG_DTMF, strings::OPTSIG_5TONE).c_str(),
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
@@ -136,12 +128,8 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		v.push_back(util::format("%u", chanNo));
 		v.push_back(util::toPrintable(std::string((const char *) chan->chname, 5)).c_str());
 		v.push_back(getCombinedFreq(chanNo, chan->rxfreq, chan->txshift, chan->flags1.shiftdir));
-		v.push_back(getDecoder(chanNo, chan->flags3.rxdcs, chan->flags3.rxcts));
-		v.push_back(getCts(chanNo, chan->rxcts));
-		v.push_back(getDcs(chanNo, chan->rxdcs, chan->rxdcsfl));
-		v.push_back(getDecoder(chanNo, chan->flags3.txdcs, chan->flags3.txcts));
-		v.push_back(getCts(chanNo, chan->txcts));
-		v.push_back(getDcs(chanNo, chan->txdcs, chan->txdcsfl));
+		v.push_back(getEncDec(chanNo, chan->flags3.rxdcs, chan->flags3.rxcts, chan->rxcts, chan->rxdcs, chan->rxdcsfl));
+		v.push_back(getEncDec(chanNo, chan->flags3.txdcs, chan->flags3.txcts, chan->txcts, chan->txdcs, chan->txdcsfl));
 		v.push_back(getSquelchMode(chanNo, chan->sql));
 		v.push_back(getTxPower(chanNo, chan->flags2.txoff, chan->flags1.txpwr));
 		v.push_back(getBcl(chanNo, chan->bcl));
@@ -261,19 +249,19 @@ std::string applet::CExport::getModel(const uint8_t *p)
 	return rs;
 }
 
-std::string applet::CExport::getDecoder(unsigned chanNo, bool dcs, bool cts)
+std::string applet::CExport::getEncDec(unsigned chanNo, bool bdcs, bool bcts, uint8_t cts, uint8_t dcs, impexp::SChannel::SDcsFlags dcsFlags)
 {
-	if (!dcs && !cts)
-		return strings::ENCDEC_NONE;
+	if (!bdcs && !bcts)
+		return strings::ENCDEC_OFF;
 
-	if (!dcs && cts)
-		return strings::ENCDEC_CTCSS;
+	if (!bdcs && bcts)
+		return util::format("%s%c%s", strings::ENCDEC_CTCSS, strings::SEPARATOR, getCts(chanNo, cts).c_str());
 
-	if (dcs && !cts)
-		return strings::ENCDEC_DCS;
+	if (bdcs && !bcts)
+		return util::format("%s%c%s", strings::ENCDEC_DCS, strings::SEPARATOR, getDcs(chanNo, dcs, dcsFlags).c_str());
 
 	loge("Warning: channel %u: both CTCSS and DCS set, assuming none", chanNo);
-	return strings::ENCDEC_NONE;
+	return strings::ENCDEC_OFF;
 }
 
 std::string applet::CExport::getSingleFreq(unsigned chanNo, const uint8_t *freq, bool condensed)
@@ -422,22 +410,22 @@ std::string applet::CExport::getPttId(unsigned chanNo, SChannel::EPttId pttid)
 			return strings::PTTID_OFF;
 
 		case SChannel::PTTID_DTMF_BEGIN:
-			return util::format("%s%c%s", strings::PTTID_DTMF, strings::PTTID_SEPARATOR, strings::PTTID_BEGIN);
+			return util::format("%s%c%s", strings::PTTID_DTMF, strings::SEPARATOR, strings::PTTID_BEGIN);
 
 		case SChannel::PTTID_DTMF_END:
-			return util::format("%s%c%s", strings::PTTID_DTMF, strings::PTTID_SEPARATOR, strings::PTTID_END);
+			return util::format("%s%c%s", strings::PTTID_DTMF, strings::SEPARATOR, strings::PTTID_END);
 
 		case SChannel::PTTID_DTMF_BOTH:
-			return util::format("%s%c%s", strings::PTTID_DTMF, strings::PTTID_SEPARATOR, strings::PTTID_BOTH);
+			return util::format("%s%c%s", strings::PTTID_DTMF, strings::SEPARATOR, strings::PTTID_BOTH);
 
 		case SChannel::PTTID_5TONE_BEGIN:
-			return util::format("%s%c%s", strings::PTTID_5TONE, strings::PTTID_SEPARATOR, strings::PTTID_BEGIN);
+			return util::format("%s%c%s", strings::PTTID_5TONE, strings::SEPARATOR, strings::PTTID_BEGIN);
 
 		case SChannel::PTTID_5TONE_END:
-			return util::format("%s%c%s", strings::PTTID_5TONE, strings::PTTID_SEPARATOR, strings::PTTID_END);
+			return util::format("%s%c%s", strings::PTTID_5TONE, strings::SEPARATOR, strings::PTTID_END);
 
 		case SChannel::PTTID_5TONE_BOTH:
-			return util::format("%s%c%s", strings::PTTID_5TONE, strings::PTTID_SEPARATOR, strings::PTTID_BOTH);
+			return util::format("%s%c%s", strings::PTTID_5TONE, strings::SEPARATOR, strings::PTTID_BOTH);
 
 		default:
 			break;

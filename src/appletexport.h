@@ -28,9 +28,7 @@ namespace applet
 		static void debugDumpChannel(const impexp::SChannel *chan);
 		static std::string getModel(const uint8_t *p);
 		static std::string getCombinedFreq(unsigned chanNo, const uint8_t *rxfreq, const uint8_t *txshift, impexp::SChannel::SFlags1::EShiftDir dir);
-		static std::string getDecoder(unsigned chanNo, bool dcs, bool cts);
-		static std::string getCts(unsigned chanNo, uint8_t cts);
-		static std::string getDcs(unsigned chanNo, uint8_t dcs, impexp::SChannel::SDcsFlags flags);
+		static std::string getEncDec(unsigned chanNo, bool bdcs, bool bcts, uint8_t cts, uint8_t dcs, impexp::SChannel::SDcsFlags dcsFlags);
 		static std::string getSquelchMode(unsigned chanNo, impexp::SChannel::ESql sql);
 		static std::string getTxPower(unsigned chanNo, bool txoff, impexp::SChannel::SFlags1::ETxPwr pwr);
 		static std::string getBcl(unsigned chanNo, impexp::SChannel::EBcl bcl);
@@ -39,5 +37,7 @@ namespace applet
 		static std::string getBandwidth(unsigned chanNo, impexp::SChannel::SFlags2::EBandwidth spacing);
 		static std::string getDefCts(unsigned chanNo, const uint8_t *defCts);
 		static std::string getSingleFreq(unsigned chanNo, const uint8_t *freq, bool condensed);
+		static std::string getCts(unsigned chanNo, uint8_t cts);
+		static std::string getDcs(unsigned chanNo, uint8_t dcs, impexp::SChannel::SDcsFlags dcsFlags);
 	};
 }

@@ -21,7 +21,7 @@ namespace impexp
 		static const char NO[]			= "no";
 		static const char YES[]			= "yes";
 
-		static const char ENCDEC_NONE[]		= "none";
+		static const char ENCDEC_OFF[]		= "off";
 		static const char ENCDEC_CTCSS[]	= "CTCSS";
 		static const char ENCDEC_DCS[]		= "DCS";
 
@@ -41,7 +41,6 @@ namespace impexp
 		static const char PTTID_OFF[]		= "off";
 		static const char PTTID_DTMF[]		= "dtmf";
 		static const char PTTID_5TONE[]		= "5tone";
-		static const char PTTID_SEPARATOR	= ':';
 		static const char PTTID_BEGIN[]		= "begin";
 		static const char PTTID_END[]		= "end";
 		static const char PTTID_BOTH[]		= "both";
@@ -54,6 +53,7 @@ namespace impexp
 		static const char BW_20[]		= "20.0";
 		static const char BW_25[]		= "25.0";
 
+		static const char SEPARATOR		= ':';
 		static const char DCS_INVERT_FLAG	= 'i';
 	}
 

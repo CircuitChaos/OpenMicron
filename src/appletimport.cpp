@@ -151,7 +151,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 		return true;
 	}
 
-	if (line.size() < 20)
+	if (line.size() < 16)
 	{
 		logError("invalid field count");
 		return false;
@@ -165,11 +165,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	if (!importName(line[idx++])) return false;
 	if (!importCombinedFreq(line[idx++])) return false;
 	if (!importEncDec(line[idx++], false)) return false;
-	if (!importCts(line[idx++], false)) return false;
-	if (!importDcs(line[idx++], false)) return false;
 	if (!importEncDec(line[idx++], true)) return false;
-	if (!importCts(line[idx++], true)) return false;
-	if (!importDcs(line[idx++], true)) return false;
 	if (!importSquelchMode(line[idx++])) return false;
 	if (!importTxPower(line[idx++])) return false;
 	if (!importBcl(line[idx++])) return false;
@@ -253,47 +249,66 @@ bool applet::CImport::importCombinedFreq(const std::string &field)
 
 bool applet::CImport::importEncDec(const std::string &field, bool isEncoder)
 {
-	bool dcs, cts;
+	bool bdcs, bcts;
 
-	if (field == strings::ENCDEC_NONE)
+	if (field == strings::ENCDEC_OFF)
 	{
-		dcs = false;
-		cts = false;
-	}
-	else if (field == strings::ENCDEC_CTCSS)
-	{
-		dcs = false;
-		cts = true;
-	}
-	else if (field == strings::ENCDEC_DCS)
-	{
-		dcs = true;
-		cts = false;
+		bdcs = false;
+		bcts = false;
 	}
 	else
 	{
-		logError("invalid %s setting (%s)", isEncoder ? "TX Encoder" : "RX Decoder", field.c_str());
-		return false;
+		const auto pos(field.find(strings::SEPARATOR));
+		if (pos == std::string::npos)
+		{
+			logError("invalid %s setting (%s)", isEncoder ? "TX Encoder" : "RX Decoder", field.c_str());
+			return false;
+		}
+
+		const std::string type(field.substr(0, pos));
+		const std::string value(field.substr(pos + 1));
+
+		if (type == strings::ENCDEC_CTCSS)
+		{
+			bdcs = false;
+			bcts = true;
+
+			if (!importCts(value, isEncoder))
+				return false;
+		}
+		else if (type == strings::ENCDEC_DCS)
+		{
+			bdcs = true;
+			bcts = false;
+
+			if (!importDcs(value, isEncoder))
+				return false;
+}
+		else
+		{
+			logError("invalid %s setting (%s)", isEncoder ? "TX Encoder" : "RX Decoder", field.c_str());
+			return false;
+		}
 	}
 
 	if (isEncoder)
 	{
-		m_chan->flags3.txdcs = dcs;
-		m_chan->flags3.txcts = cts;
+		m_chan->flags3.txdcs = bdcs;
+		m_chan->flags3.txcts = bcts;
 	}
 	else
 	{
-		m_chan->flags3.rxdcs = dcs;
-		m_chan->flags3.rxcts = cts;
+		m_chan->flags3.rxdcs = bdcs;
+		m_chan->flags3.rxcts = bcts;
 	}
 
 	return true;
 }
 
-bool applet::CImport::importCts(const std::string &field, bool isEncoder)
+bool applet::CImport::importCts(const std::string &value, bool isEncoder)
 {
 	size_t idx;
-	if (!getCtsIdx(field, idx, true))
+	if (!getCtsIdx(value, idx, true))
 		return false;
 
 	if (isEncoder)
@@ -303,14 +318,14 @@ bool applet::CImport::importCts(const std::string &field, bool isEncoder)
 	return true;
 }
 
-bool applet::CImport::importDcs(const std::string &field, bool isEncoder)
+bool applet::CImport::importDcs(const std::string &value, bool isEncoder)
 {
 	bool invert(false);
-	std::string sdcs(field);
-	if (field.size() >= 1 && field[0] == strings::DCS_INVERT_FLAG)
+	std::string sdcs(value);
+	if (value.size() >= 1 && value[0] == strings::DCS_INVERT_FLAG)
 	{
 		invert = true;
-		sdcs = field.substr(1);
+		sdcs = value.substr(1);
 	}
 
 	if (sdcs.empty())
@@ -325,7 +340,7 @@ bool applet::CImport::importDcs(const std::string &field, bool isEncoder)
 	uint16_t dcs16(strtol(sdcs.c_str(), NULL, 8));
 	if (util::format("%03o", dcs16) != sdcs)
 	{
-		logError("invalid %s DCS setting (%s)", isEncoder ? "TX" : "RX", field.c_str());
+		logError("invalid %s DCS setting (%s)", isEncoder ? "TX" : "RX", value.c_str());
 		return false;
 	}
 
@@ -413,7 +428,7 @@ bool applet::CImport::importPttId(const std::string &field)
 		return true;
 	}
 
-	const auto pos(field.find(strings::PTTID_SEPARATOR));
+	const auto pos(field.find(strings::SEPARATOR));
 	if (pos == std::string::npos)
 	{
 		logError("invalid PTT ID setting (%s)", field.c_str());

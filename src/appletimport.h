@@ -54,8 +54,6 @@ namespace applet
 		bool importName(const std::string &field);
 		bool importCombinedFreq(const std::string &field);
 		bool importEncDec(const std::string &field, bool isEncoder);
-		bool importCts(const std::string &field, bool isEncoder);
-		bool importDcs(const std::string &field, bool isEncoder);
 		bool importSquelchMode(const std::string &field);
 		bool importTxPower(const std::string &field);
 		bool importBcl(const std::string &field);
@@ -72,5 +70,7 @@ namespace applet
 		bool convertFreq(uint8_t out[4], const std::string &in);
 
 		bool importKey(COmiFile &omi, unsigned idx, const std::string &value, bool isMic);
+		bool importCts(const std::string &value, bool isEncoder);
+		bool importDcs(const std::string &value, bool isEncoder);
 	};
 }
