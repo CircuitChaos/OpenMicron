@@ -154,26 +154,6 @@ Data at offset 0x3210:
 - PD mic key
 - 00 00 00 2c 00 00 00 00
 
-Mic keys:
-
-- 00: ?
-- 01: ?
-- 02: V/M
-- 03: SQL
-- 04: VOL
-- 05: POW
-- 06: CDT
-- 07: REV
-- 08: SCN
-- 09: CAL
-- 0a: TALK
-- 0b: BND
-- 0c: SFT
-- 0d: MON
-- 0e: DIR
-- 0f: TRF
-- 10: RDW
-
 === Function key configuration ===
 
 Data at offset 0x3250:
@@ -192,10 +172,10 @@ Data at offset 0x3250:
 - Key mode 2 P6
 - 00 00 00 00
 
-Function keys:
+=== Key codes ===
 
 - 00: ?
-- 01: A/B
+- 01: A/B (only function; mic has designated key for that)
 - 02: V/M
 - 03: SQL
 - 04: VOL
@@ -204,11 +184,11 @@ Function keys:
 - 07: REV
 - 08: SCN
 - 09: CAL
-- 0a: TALK
+- 0a: TAL
 - 0b: BND
 - 0c: SFT
 - 0d: MON
 - 0e: DIR
 - 0f: TRF
 - 10: RDW
-- 11: NULL
+- 11: OFF (only function; for some reason original software doesn't allow to set it for microphone keys)
