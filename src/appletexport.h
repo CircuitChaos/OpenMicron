@@ -36,7 +36,7 @@ namespace applet
 		static std::string getBcl(unsigned chanNo, impexp::SChannel::EBcl bcl);
 		static std::string getPttId(unsigned chanNo, impexp::SChannel::EPttId pttid);
 		static std::string getOptSig(unsigned chanNo, impexp::SChannel::EOptSig optsig, uint8_t dtmf);
-		static std::string getSpacing(unsigned chanNo, impexp::SChannel::SFlags2::ESpacing spacing);
+		static std::string getBandwidth(unsigned chanNo, impexp::SChannel::SFlags2::EBandwidth spacing);
 		static std::string getDefCts(unsigned chanNo, const uint8_t *defCts);
 		static std::string getFuncKey(unsigned key);
 		static std::string getMicKey(unsigned key);

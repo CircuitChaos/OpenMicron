@@ -50,9 +50,9 @@ namespace impexp
 		static const char OPTSIG_DTMF[]		= "dtmf:M";
 		static const char OPTSIG_5TONE[]	= "5tone:";
 
-		static const char SPACING_125[]		= "12.5";
-		static const char SPACING_20[]		= "20.0";
-		static const char SPACING_25[]		= "25.0";
+		static const char BW_125[]		= "12.5";
+		static const char BW_20[]		= "20.0";
+		static const char BW_25[]		= "25.0";
 
 		static const char DCS_INVERT_FLAG	= 'i';
 	}
@@ -165,16 +165,16 @@ namespace impexp
 
 		struct SFlags2
 		{
-			enum ESpacing
+			enum EBandwidth
 			{
-				SP_125 = 0,
-				SP_20 = 1,
-				SP_25 = 2,
+				BW_125 = 0,
+				BW_20 = 1,
+				BW_25 = 2,
 			};
 
 			bool txoff:1;
 			bool reverse:1;
-			ESpacing spacing:2;
+			EBandwidth bandwidth:2;
 			uint8_t dunno:4;
 		} __attribute__((packed));
 

@@ -106,7 +106,7 @@ ofs	size	meaning
 - bit 6: ?
 - bit 5: ?
 - bit 4: ?
-- bits 32: channel spacing (00 = 12.5kHz, 01 = 20 kHz, 10 = 25kHz)
+- bits 32: channel bandwidth (spacing) (00 = 12.5kHz, 01 = 20 kHz, 10 = 25kHz)
 - bit 1: reverse (0 = reverse off, 1 = reverse on)
 - bit 0: txoff (0 = tx permitted, 1 = tx forbidden)
 

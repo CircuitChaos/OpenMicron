@@ -64,7 +64,7 @@ namespace applet
 		bool importScanning(const std::string &field, bool &scanning);
 		bool importTalkaround(const std::string &field);
 		bool importReverse(const std::string &field);
-		bool importSpacing(const std::string &field);
+		bool importBandwidth(const std::string &field);
 		bool importDefCts(const std::string &field);
 
 		bool convertName(std::string &out, const std::string &in, unsigned size);

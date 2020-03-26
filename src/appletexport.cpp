@@ -76,7 +76,7 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		"Scanning",
 		"Talkaround",
 		"Reverse",
-		"Spacing",
+		"Bandwidth",
 		"Def. CTCSS",
 		NULL);
 
@@ -99,7 +99,7 @@ void applet::CExport::outputChannelComment(CTextFile &tf)
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
 		util::format("%s, %s", strings::NO, strings::YES).c_str(),
-		util::format("%s, %s, %s", strings::SPACING_125, strings::SPACING_20, strings::SPACING_25).c_str(),
+		util::format("%s, %s, %s", strings::BW_125, strings::BW_20, strings::BW_25).c_str(),
 		"",
 		NULL);
 }
@@ -164,7 +164,7 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		v.push_back(getFlag(&data[SCANNING_OFFSET], i) ? strings::YES : strings::NO);
 		v.push_back(chan->flags1.talkaround ? strings::YES : strings::NO);
 		v.push_back(chan->flags2.reverse ? strings::YES : strings::NO);
-		v.push_back(getSpacing(chanNo, chan->flags2.spacing));
+		v.push_back(getBandwidth(chanNo, chan->flags2.bandwidth));
 		v.push_back(getDefCts(chanNo, chan->defcts));
 		tf.add(v);
 	}
@@ -195,8 +195,8 @@ void applet::CExport::debugDumpChannel(const SChannel *chan)
 	logd("Dunno 1: 0x%02x", chan->dunno1);
 	logd("Flags 1: talkaround=%d, dunno=0x%02x, txpower=%d, shiftdir=%d",
 		chan->flags1.talkaround, chan->flags1.dunno, chan->flags1.txpwr, chan->flags1.shiftdir);
-	logd("Flags 2: dunno=0x%02x, spacing=%d, reverse=%d, txoff=%d",
-		chan->flags2.dunno, chan->flags2.spacing, chan->flags2.reverse, chan->flags2.txoff);
+	logd("Flags 2: dunno=0x%02x, bandwidth=%d, reverse=%d, txoff=%d",
+		chan->flags2.dunno, chan->flags2.bandwidth, chan->flags2.reverse, chan->flags2.txoff);
 	logd("Flags 3: dtmf=%d, rxdcs=%d, rxcts=%d, txdcs=%d, txcts=%d",
 		chan->flags3.dtmf, chan->flags3.rxdcs, chan->flags3.rxcts, chan->flags3.txdcs, chan->flags3.txcts);
 	logd("rxcts: 0x%02x, txcts: 0x%02x", chan->rxcts, chan->txcts);
@@ -456,25 +456,25 @@ std::string applet::CExport::getOptSig(unsigned chanNo, SChannel::EOptSig optsig
 	return strings::OPTSIG_OFF;
 }
 
-std::string applet::CExport::getSpacing(unsigned chanNo, SChannel::SFlags2::ESpacing spacing)
+std::string applet::CExport::getBandwidth(unsigned chanNo, SChannel::SFlags2::EBandwidth bandwidth)
 {
-	switch (spacing)
+	switch (bandwidth)
 	{
-		case SChannel::SFlags2::SP_125:
-			return strings::SPACING_125;
+		case SChannel::SFlags2::BW_125:
+			return strings::BW_125;
 
-		case SChannel::SFlags2::SP_20:
-			return strings::SPACING_20;
+		case SChannel::SFlags2::BW_20:
+			return strings::BW_20;
 
-		case SChannel::SFlags2::SP_25:
-			return strings::SPACING_25;
+		case SChannel::SFlags2::BW_25:
+			return strings::BW_25;
 
 		default:
 			break;
 	}
 
-	loge("Warning: channel %u: could not decode Channel Spacing (0x%02x), setting to 12.5 kHz", chanNo, spacing);
-	return strings::SPACING_125;
+	loge("Warning: channel %u: could not decode Bandwidth (0x%02x), setting to 12.5 kHz", chanNo, bandwidth);
+	return strings::BW_125;
 }
 
 std::string applet::CExport::getDefCts(unsigned /* chanNo */, const uint8_t *defCts)

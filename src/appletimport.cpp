@@ -178,7 +178,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 	if (!importScanning(line[idx++], scanning)) return false;
 	if (!importTalkaround(line[idx++])) return false;
 	if (!importReverse(line[idx++])) return false;
-	if (!importSpacing(line[idx++])) return false;
+	if (!importBandwidth(line[idx++])) return false;
 	if (!importDefCts(line[idx++])) return false;
 
 	if (!scanning)
@@ -531,17 +531,17 @@ bool applet::CImport::importReverse(const std::string &field)
 	return true;
 }
 
-bool applet::CImport::importSpacing(const std::string &field)
+bool applet::CImport::importBandwidth(const std::string &field)
 {
-	if (field == strings::SPACING_125)
-		m_chan->flags2.spacing = SChannel::SFlags2::SP_125;
-	else if (field == strings::SPACING_20)
-		m_chan->flags2.spacing = SChannel::SFlags2::SP_20;
-	else if (field == strings::SPACING_25)
-		m_chan->flags2.spacing = SChannel::SFlags2::SP_25;
+	if (field == strings::BW_125)
+		m_chan->flags2.bandwidth = SChannel::SFlags2::BW_125;
+	else if (field == strings::BW_20)
+		m_chan->flags2.bandwidth = SChannel::SFlags2::BW_20;
+	else if (field == strings::BW_25)
+		m_chan->flags2.bandwidth = SChannel::SFlags2::BW_25;
 	else
 	{
-		logError("invalid Spacing setting (%s)", field.c_str());
+		logError("invalid Bandwidth setting (%s)", field.c_str());
 		return false;
 	}
 
