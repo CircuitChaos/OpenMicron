@@ -16,7 +16,7 @@ cli::CImport::CImport(): m_inputIsText(false)
 	add('c', true, "Input .csv file path");
 	add('i', true, "Input .omi file path");
 	add('o', true, "Output .omi file path (can be the same as -i)");
-	setSummary("export", "-t <file.txt>|-c <file.csv> -i <file.omi> -o <file.omi>");
+	setSummary("import", "-t <file.txt>|-c <file.csv> -i <file.omi> -o <file.omi>");
 }
 
 const std::string &cli::CImport::getInputTextCsv() const
