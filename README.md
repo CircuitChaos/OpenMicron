@@ -1,6 +1,6 @@
 # Open Micron
 
-An utility to program **CRT Micron UV**, **AnyTone AT-778UV** (and probably **Retevis RT-95**) transceivers under Linux.
+An utility to program **CRT Micron UV**, **AnyTone AT-778UV** and probably **Retevis RT-95** transceivers under Linux.
 
 ## Objective
 
