@@ -10,7 +10,12 @@ Handshake:
 1. Write: PROGRAM
 3. Read: QX<ACK>
 4. Write: <STX>
-5. Read: IMICRON<00><01>V100<00><00><ACK>
+5. Read: I<name><01>V100<00><00><ACK>
+
+<name> is 7 bytes long, right-padded with zeroes.
+
+<name> for CRT Micron is: MICRON<00>
+<name> for AT-778UV is: 778UV-P
 
 Read packets:
 

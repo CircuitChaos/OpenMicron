@@ -1,6 +1,6 @@
 # Open Micron
 
-An utility to program **CRT Micron UV** (and possibly **AnyTone AT-778UV** and **Retevis RT-95** too) transceivers under Linux.
+An utility to program **CRT Micron UV**, **AnyTone AT-778UV** (and probably **Retevis RT-95**) transceivers under Linux.
 
 ## Objective
 
@@ -10,7 +10,7 @@ Unfortunately, at the time of writing there's no known way to program these radi
 
 Because of it, I decided to reverse-engineer the programming protocol and radio memory map and write a replacement for the proprietary software, especially as I need to be able to program my radio from the Raspberry Pi.
 
-As far as I know, **CRT Micron UV** is also available under **AnyTone AT-778UV** and **Retevis RT-95** brand names, but I have absolutely no idea if this utility will be able to handle them. Testers are more than welcome!
+**CRT Micron UV** is also available under **AnyTone AT-778UV** and **Retevis RT-95** brand names. I bought AT-778UV to my second QTH and can confirm that Open Micron works with it as well. It **should** work with RT-95 too, but I didn't test it. Testers are more than welcome!
 
 ## Disclaimer
 
@@ -167,7 +167,7 @@ At the time of writing, only channel configuration, welcome message and assignme
 
 What's left to be done:
 
-* Investigate the situation with **AnyTone AT-778UV**, **Retevis RT-95** and/or other similar radios. Does the software work with them? Is the memory map the same? It should be, but you can never know
+* Investigate the situation with **Retevis RT-95** and/or other similar radios. Does the software work with it? Is the memory map the same? It should be, but you can never know
 * Write proper manpage and – if software proves to be reliable – work with Linux distribution maintainers to integrate it into their repositories
 * Work with **Chirp** maintainers to add the radio to Chirp (the memory map I created should help!)
 * Make the utility portable to other POSIX-compatible systems
