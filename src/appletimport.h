@@ -50,6 +50,7 @@ namespace applet
 		bool importWelcome(COmiFile &omi, const std::vector<std::string> &line);
 		bool importChannel(COmiFile &omi, const std::vector<std::string> &line);
 		bool importKey(COmiFile &omi, const std::vector<std::string> &line);
+		bool importSetting(COmiFile &omi, const std::vector<std::string> &line);
 
 		bool importName(const std::string &field);
 		bool importCombinedFreq(const std::string &field);

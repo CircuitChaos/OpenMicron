@@ -114,6 +114,15 @@ Function names:
 * **TRF** – ?
 * **RDW** – toggles dual watch
 
+### **setting** command
+
+This command allows to set various useful, but not easily accessible settings. The list is not complete.
+
+* **auto_power_on** – auto power on function (yes, no)
+* **monitor_mode** – behavior of the MON key (momentary, permanent)
+* **save_ch_param** – whether to save channel parameters after editing them in radio (yes, no)
+* **knob_mode** – default knob mode (chfreq, volume)
+
 ### **channel** command
 
 First field contains the channel number. Subsequent fields can be empty for the channel to be removed, or can be set as follows:

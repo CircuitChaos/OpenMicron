@@ -23,8 +23,10 @@ namespace applet
 	private:
 		static void outputChannelComment(CTextFile &tf);
 		static void outputKeysComment(CTextFile &tf);
+		static void outputSettingsComment(CTextFile &tf);
 		static void outputChannels(CTextFile &tf, const std::vector<uint8_t> &data);
 		static void outputKeys(CTextFile &tf, const std::vector<uint8_t> &data);
+		static void outputSettings(CTextFile &tf, const std::vector<uint8_t> &data);
 		static void debugDumpChannel(const impexp::SChannel *chan);
 		static std::string getModel(const uint8_t *p);
 		static std::string getCombinedFreq(unsigned chanNo, const uint8_t *rxfreq, const uint8_t *txshift, impexp::SChannel::SFlags1::EShiftDir dir);

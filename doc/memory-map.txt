@@ -39,8 +39,8 @@ offset	size	meaning
 0x1c80	5216	0x00
 0x30e0	16	?, first byte 0x01, rest 0x00
 0x30f0	272	0xff
-0x3200	16	?
-0x3210	16	mic key configuration, see below
+0x3200	16	configuration, unknown meaning; byte at 0x320a is 1 when auto power on is on, and 0 when off
+0x3210	16	mic key configuration and some settings, see below
 0x3220	32	0x00
 0x3240	16	?
 0x3250	16	function key configuration, see below
@@ -152,7 +152,17 @@ Data at offset 0x3210:
 - PB mic key
 - PC mic key
 - PD mic key
-- 00 00 00 2c 00 00 00 00
+- 00 00 00
+- flags:
+  - bit 7 (MSB): unknown (0)
+  - bit 6: unknown (0)
+  - bit 5: monitor key mode (0 when momentary, 1 when permanent)
+  - bit 4: unknown (0)
+  - bit 3: save channel param (1 when on, 0 when off)
+  - bit 2: unknown (1)
+  - bit 1: unknown (0)
+  - bit 0 (LSB): default knob mode (1 when ch/freq, 0 when volume)
+- 00 00 00 00
 
 === Function key configuration ===
 

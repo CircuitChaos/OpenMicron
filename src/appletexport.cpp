@@ -47,6 +47,9 @@ bool applet::CExport::run(int argc, char * const argv[])
 	outputKeysComment(tf);
 	outputKeys(tf, infile.getData());
 	tf.add(0);
+	outputSettingsComment(tf);
+	outputSettings(tf, infile.getData());
+	tf.add(0);
 	outputChannelComment(tf);
 	outputChannels(tf, infile.getData());
 
@@ -184,6 +187,34 @@ void applet::CExport::outputKeys(CTextFile &tf, const std::vector<uint8_t> &data
 
 		tf.add(-1, strings::KEY, keyName.c_str(), keyValue.c_str(), NULL);
 	}
+}
+
+void applet::CExport::outputSettingsComment(CTextFile &tf)
+{
+	tf.add(-1, strings::COMMENT,
+		"Setting name",
+		"Setting value",
+		NULL);
+}
+
+void applet::CExport::outputSettings(CTextFile &tf, const std::vector<uint8_t> &data)
+{
+	const uint8_t apoff(data[APON_OFFSET]);
+	const SKeyFlags *keyflags((const SKeyFlags *) &data[KEY_FLAGS_OFFSET]);
+
+	if (apoff == 0)
+		tf.add(-1, strings::SETTING, strings::SETTING_AUTO_POWER_ON, strings::SETTING_AUTO_POWER_ON_NO, NULL);
+	else if (apoff == 1)
+		tf.add(-1, strings::SETTING, strings::SETTING_AUTO_POWER_ON, strings::SETTING_AUTO_POWER_ON_YES, NULL);
+
+	tf.add(-1, strings::SETTING, strings::SETTING_MON,
+		keyflags->monpermanent ? strings::SETTING_MON_PERMANENT : strings::SETTING_MON_MOMENTARY, NULL);
+
+	tf.add(-1, strings::SETTING, strings::SETTING_SAVE_CH_PARAM,
+		keyflags->savechparm ? strings::SETTING_SAVE_CH_PARAM_YES : strings::SETTING_SAVE_CH_PARAM_NO, NULL);
+
+	tf.add(-1, strings::SETTING, strings::SETTING_KNOB_MODE,
+		keyflags->knobchfreq ? strings::SETTING_KNOB_MODE_CHFREQ : strings::SETTING_KNOB_MODE_VOL, NULL);
 }
 
 void applet::CExport::debugDumpChannel(const SChannel *chan)

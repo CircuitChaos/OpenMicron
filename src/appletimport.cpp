@@ -73,6 +73,11 @@ bool applet::CImport::run(int argc, char * const argv[])
 			if (!importKey(omi, line))
 				return false;
 		}
+		else if (line[0] == strings::SETTING)
+		{
+			if (!importSetting(omi, line))
+				return false;
+		}
 		else
 		{
 			logError("command '%s' not recognized", line[0].c_str());
@@ -674,6 +679,74 @@ bool applet::CImport::importKey(COmiFile &omi, const std::vector<std::string> &l
 
 	logError("invalid key name (%s)", line[1].c_str());
 	return false;
+}
+
+bool applet::CImport::importSetting(COmiFile &omi, const std::vector<std::string> &line)
+{
+	if (line.size() < 3)
+	{
+		logError("invalid setting format in input file (too short)");
+		return false;
+	}
+
+	if (line[1] == strings::SETTING_AUTO_POWER_ON)
+	{
+		if (line[2] == strings::SETTING_AUTO_POWER_ON_YES)
+			omi.getData()[APON_OFFSET] = 1;
+		else if (line[2] == strings::SETTING_AUTO_POWER_ON_NO)
+			omi.getData()[APON_OFFSET] = 0;
+		else
+		{
+			logError("invalid setting for %s", strings::SETTING_AUTO_POWER_ON);
+			return false;
+		}
+	}
+	else if (line[1] == strings::SETTING_MON)
+	{
+		SKeyFlags *keyflags((SKeyFlags *) &omi.getData()[KEY_FLAGS_OFFSET]);
+		if (line[2] == strings::SETTING_MON_MOMENTARY)
+			keyflags->monpermanent = false;
+		else if (line[2] == strings::SETTING_MON_PERMANENT)
+			keyflags->monpermanent = true;
+		else
+		{
+			logError("invalid setting for %s", strings::SETTING_MON);
+			return false;
+		}
+	}
+	else if (line[1] == strings::SETTING_SAVE_CH_PARAM)
+	{
+		SKeyFlags *keyflags((SKeyFlags *) &omi.getData()[KEY_FLAGS_OFFSET]);
+		if (line[2] == strings::SETTING_SAVE_CH_PARAM_YES)
+			keyflags->savechparm = true;
+		else if (line[2] == strings::SETTING_SAVE_CH_PARAM_NO)
+			keyflags->savechparm = false;
+		else
+		{
+			logError("invalid setting for %s", strings::SETTING_SAVE_CH_PARAM);
+			return false;
+		}
+	}
+	else if (line[1] == strings::SETTING_KNOB_MODE)
+	{
+		SKeyFlags *keyflags((SKeyFlags *) &omi.getData()[KEY_FLAGS_OFFSET]);
+		if (line[2] == strings::SETTING_KNOB_MODE_VOL)
+			keyflags->knobchfreq = false;
+		else if (line[2] == strings::SETTING_KNOB_MODE_CHFREQ)
+			keyflags->knobchfreq = true;
+		else
+		{
+			logError("invalid setting for %s", strings::SETTING_KNOB_MODE);
+			return false;
+		}
+	}
+	else
+	{
+		logError("invalid setting '%s'", line[1].c_str());
+		return false;
+	}
+
+	return true;
 }
 
 bool applet::CImport::importKey(COmiFile &omi, unsigned idx, const std::string &value, bool isMic)

@@ -54,6 +54,24 @@ namespace impexp
 		static const char BW_20[]		= "medium";
 		static const char BW_25[]		= "wide";
 
+		static const char SETTING[]		= "setting";
+
+		static const char SETTING_AUTO_POWER_ON[]	= "auto_power_on";
+		static const char SETTING_AUTO_POWER_ON_YES[]	= "yes";
+		static const char SETTING_AUTO_POWER_ON_NO[]	= "no";
+
+		static const char SETTING_MON[]		= "monitor_mode";
+		static const char SETTING_MON_PERMANENT[]	= "permanent";
+		static const char SETTING_MON_MOMENTARY[]	= "momentary";
+
+		static const char SETTING_SAVE_CH_PARAM[]	= "save_ch_param";
+		static const char SETTING_SAVE_CH_PARAM_YES[]	= "yes";
+		static const char SETTING_SAVE_CH_PARAM_NO[]	= "no";
+
+		static const char SETTING_KNOB_MODE[]	= "knob_mode";
+		static const char SETTING_KNOB_MODE_CHFREQ[]	= "chfreq";
+		static const char SETTING_KNOB_MODE_VOL[]	= "volume";
+
 		static const char SEPARATOR		= ':';
 		static const char DCS_INVERT_FLAG	= 'i';
 	}
@@ -66,6 +84,8 @@ namespace impexp
 
 	static const unsigned FUNC_KEYS_OFFSET	= 0x3250;
 	static const unsigned MIC_KEYS_OFFSET	= 0x3214;
+	static const unsigned APON_OFFSET	= 0x320a;
+	static const unsigned KEY_FLAGS_OFFSET	= 0x321b;
 
 	static const char * const CTSTBL[] =
 	{
@@ -252,6 +272,18 @@ namespace impexp
 		uint8_t dunno4;
 		uint8_t chname[5];
 		uint8_t defcts[2];
+	} __attribute__((packed));
+
+	struct SKeyFlags
+	{
+		bool knobchfreq:1;
+		bool dunno1:1;
+		bool dunno2:1;
+		bool savechparm:1;
+		bool dunno4:1;
+		bool monpermanent:1;
+		bool dunno6:1;
+		bool dunno7:1;
 	} __attribute__((packed));
 
 	static inline bool getFlag(const uint8_t *memory, unsigned position)
