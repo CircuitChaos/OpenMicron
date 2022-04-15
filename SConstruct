@@ -5,7 +5,7 @@
 import subprocess
 
 def getGitHash():
-    return subprocess.Popen('git rev-parse --short HEAD', stdout=subprocess.PIPE, shell=True).stdout.read().strip()
+    return subprocess.Popen('git rev-parse --short HEAD', stdout=subprocess.PIPE, shell=True).stdout.read().decode('utf-8').strip()
 
 env = Environment()
 env['CCFLAGS']	= '-Wall -Wextra -std=c++11 -O2 -g -DGIT_HASH=' + getGitHash()
