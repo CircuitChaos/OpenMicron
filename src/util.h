@@ -21,5 +21,6 @@ namespace util
 #undef FORMAT_ATTR
 	uint32_t crc32(uint32_t crc, const void *data, size_t size);
 	std::string toPrintable(const std::string &s);
+	std::string stripRight(const std::string &s);
 	std::vector<std::string> tokenize(const std::string &src, char sep);
 }

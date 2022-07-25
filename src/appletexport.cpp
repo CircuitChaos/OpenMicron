@@ -114,7 +114,7 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		const SChannel *chan((const SChannel *) &data[i * 32]);
 		debugDumpChannel(chan);
 
-		if (!getFlag(&data[CHAN_EN_OFFSET], i) || !memcmp(chan->chname, "\x20\x20\x20\x20\x20", sizeof(chan->chname)) || !memcmp(chan->chname, "\xff\xff\xff\xff\xff", sizeof(chan->chname)))
+		if (!getFlag(&data[CHAN_EN_OFFSET], i))
 		{
 			logd("Channel %u is empty", chanNo);
 			tf.add(2, "channel", util::format("%u", chanNo).c_str());
@@ -126,7 +126,7 @@ void applet::CExport::outputChannels(CTextFile &tf, const std::vector<uint8_t> &
 		// xxx fix this chanNo mess with instance-wide state (like in appletimport)
 		v.push_back(strings::CHANNEL);
 		v.push_back(util::format("%u", chanNo));
-		v.push_back(util::toPrintable(std::string((const char *) chan->chname, 5)).c_str());
+		v.push_back(util::stripRight(util::toPrintable(std::string((const char *) chan->chname, 5))));
 		v.push_back(getCombinedFreq(chanNo, chan->rxfreq, chan->txshift, chan->flags1.shiftdir));
 		v.push_back(getEncDec(chanNo, chan->flags3.rxdcs, chan->flags3.rxcts, chan->rxcts, chan->rxdcs, chan->rxdcsfl));
 		v.push_back(getEncDec(chanNo, chan->flags3.txdcs, chan->flags3.txcts, chan->txcts, chan->txdcs, chan->txdcsfl));

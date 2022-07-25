@@ -100,6 +100,13 @@ std::string util::toPrintable(const std::string &s)
 	return rs;
 }
 
+std::string util::stripRight(const std::string &s)
+{
+	std::string rs(s);
+	rs.erase(rs.find_last_not_of(' ') + 1);
+	return rs;
+}
+
 std::vector<std::string> util::tokenize(const std::string &src, char sep)
 {
 	std::vector<std::string> v;
