@@ -166,7 +166,9 @@ Before writing memory, software queries the radio for its model name and refuses
 
 If something doesn't work as expected, please report an issue using the GitHub issue tracker, but be sure to run the utility with *-d* option to produce debug output. If your radio gets bricked, I might or might not be able to help, but by all means report what happened, so I can react somehow (write a huge warning here, add more protections to the software, or something else).
 
-I didn't disassemble my radio (yet), but **if** it keeps its data in the serially-accessible EEPROM (like all other radios that I disassembled did), it might be possible to bring it back to life by externaly reprogramming the memory, with or without unsoldering. It will need to be investigated if such situation happens, but I can't promise anything.
+~~I didn't disassemble my radio (yet), but **if** it keeps its data in the serially-accessible EEPROM (like all other radios that I disassembled did), it might be possible to bring it back to life by externaly reprogramming the memory, with or without unsoldering. It will need to be investigated if such situation happens, but I can't promise anything.~~
+
+I finally disassembled the radio ([here's the YouTube video](https://www.youtube.com/watch?v=16qosqZoKHA)) and took a note on what's inside. There's a *FM24C256* chip next to the main MCU which, most probably, stores all user configuration and data. It's a 256 kbit (32 kB) memory, compatible with the widely used 24C256 I<sup>2</sup>C EEPROM. If that's the case, then the memory can be easily programmed after disassembling the radio, so there's still hope if the radio accidentally gets bricked.
 
 ## Radio configuration
 
