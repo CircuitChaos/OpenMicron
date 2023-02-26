@@ -147,7 +147,7 @@ bool applet::CImport::importChannel(COmiFile &omi, const std::vector<std::string
 
 	m_chan = (SChannel *) &omi.getData()[(chanNo - 1) * 32];
 	m_errCtx.chanNo = chanNo;
-	if (line.size() == 2 || line[2].empty())
+	if (line.size() == 2 || line[3].empty())
 	{
 		logd("Removing channel %u", chanNo);
 		memset(m_chan, 0xff, sizeof(SChannel));
